@@ -48,12 +48,9 @@ private object VecReflectionContext {
   final val MSG_REFLECT_ENTITY = "reflect_ent"
 
   def reflect(entity: Entity, player: EntityPlayer): Unit = {
-    val lookPos = Raytrace.getLookingPos(player, 20).getLeft
-    val speed = new Vec3d(entity.motionX, entity.motionY, entity.motionZ).length()
-    val vel = multiply(subtract(lookPos, entityHeadPos(entity)).normalize, speed)
-    entity.motionX = vel.x
-    entity.motionY = vel.y
-    entity.motionZ = vel.z
+    entity.motionX = -entity.motionX
+    entity.motionY = -entity.motionY
+    entity.motionZ = -entity.motionZ
   }
 }
 
@@ -137,12 +134,11 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
 
     fireball.setPosition(source.posX, source.posY, source.posZ)
-    val lookPos = Raytrace.getLookingPos(player, 20).getLeft
-    val speed = new Vec3d(source.motionX, source.motionY, source.motionZ).length()
-    val vel = multiply(subtract(lookPos, entityHeadPos(source)).normalize, speed)
+    val vel = new Vec3d(-source.motionX, -source.motionY, -source.motionZ)
     setMotion(fireball, vel)
     EntityAffection.mark(fireball)
     world().spawnEntity(fireball)
+    true
   }
 
   @Listener(channel=MSG_TICK, side=Array(Side.CLIENT))
@@ -162,9 +158,9 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   }
 
   /**
-    * Note: Canceling the damage event in `LivingHurtEvent` still causes knockback, so there needs
-    *  to be one more pre testing.
-    */
+   * Note: Canceling the damage event in `LivingHurtEvent` still causes knockback, so there needs
+   *  to be one more pre testing.
+   */
   @SubscribeEvent
   def onLivingAttack(evt: LivingAttackEvent): Unit = {
     if (evt.getEntityLiving.equals(player)) {
@@ -194,9 +190,9 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   private var _isAttacking = false
 
   /**
-    * @param passby If passby=true, and this isn't a complete absorb, the action will not perform. Else it will.
-    * @return (Whether action had been really performed, processed damage)
-    */
+   * @param passby If passby=true, and this isn't a complete absorb, the action will not perform. Else it will.
+   * @return (Whether action had been really performed, processed damage)
+   */
   private def handleAttack(dmgSource: DamageSource, dmg: Float, passby: Boolean): (Boolean, Float) = {
     val reflectDamage = lerpf(0.6f, 1.2f, ctx.getSkillExp) * dmg
     if (!passby) {
