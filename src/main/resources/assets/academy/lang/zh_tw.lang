@@ -281,7 +281,7 @@ ac.ability.vecmanip.vec_deviation.desc=使向你飛來的投射物失去飛行�
 ac.ability.vecmanip.dir_blast.desc=將揮拳時產生的反作用力奪取並加倍疊加到向前的衝擊力上，使得拳頭具有極強的破壞性。直接擊打方塊會將其破壞。
 ac.ability.vecmanip.storm_wing.desc=操作空氣的向量，在背後展開四個微型龍捲風，並用它們產生的推進力高速飛行。在熟練度較低時會破壞周圍的方塊。
 ac.ability.vecmanip.blood_retro.desc=操作敵人的血液流向，使主動脈破裂並造成致死的傷害。
-ac.ability.vecmanip.vec_reflection.desc=將攻擊自己的危險向量向視線方向反轉，讓敵人自食其果。
+ac.ability.vecmanip.vec_reflection.desc=將反射性危險精確地導向目標區域，使敵人的攻勢成為自己的敗筆。
 ac.ability.vecmanip.plasma_cannon.desc=操作極大範圍的空氣流動，將其壓縮混合，變成一枚巨大的電漿體，並向前投擲。
 
 # 指令

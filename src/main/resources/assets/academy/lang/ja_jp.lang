@@ -274,7 +274,7 @@ ac.ability.vecmanip.blood_retro.name=血源逆行
 ac.ability.vecmanip.vec_reflection.name=ベクトル反射
 ac.ability.vecmanip.plasma_cannon.name=プラズマ砲
 
-ac.ability.vecmanip.vec_reflection.desc=敵が苦しむように、視線方向のあなたのラインに危険な攻撃は、逆転されます。
+ac.ability.vecmanip.vec_reflection.desc=反射的な危険のベクトルを的確に狙った部分に向け、敵の攻撃を自滅に導く。
 ac.ability.vecmanip.dir_shock.desc=衝撃力に反衝力を追加し、破壊的で拳を作り。
 ac.ability.vecmanip.ground_shock.desc=地面を踏み、地面に発生するエネルギーを収集し、前方に発射します。活動目標を創傷形成することができます。
 ac.ability.vecmanip.vec_accel.desc=ベクトル演算は、すべての前方に調整し、独自のゲイン大きな加速度を作る地面が発生する力の方向をペダリング作ります。

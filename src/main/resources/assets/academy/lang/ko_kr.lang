@@ -283,7 +283,7 @@ ac.ability.vecmanip.vec_deviation.desc=발사체의 비행속도를 취소하고
 ac.ability.vecmanip.dir_blast.desc=물체에 펀칭하는 힘을 세 배로 늘려 파괴력을 극대화합니다. 충돌하는 지역의 블록을 파괴할 것입니다.
 ac.ability.vecmanip.storm_wing.desc=공기의 속도를 조작해서 여러분의 등쪽에 네 개의 미세 풍선을 형성하고, 그것들이 만들어내는 힘을 이용하여 빠른 속도로 날아요. 경험이 부족하면 근처 블록을 부수겠습니다.
 ac.ability.vecmanip.blood_retro.desc=유기 적들의 혈류를 저어 혈관이 터지고 극심한 고통 속에 죽게 만듭니다.
-ac.ability.vecmanip.vec_reflection.desc=위험한 들어오는 공격을 여러분의 시야로 반사시키고, 여러분의 상대가 그것을 견뎌내도록 합니다.
+ac.ability.vecmanip.vec_reflection.desc=반사적 위험을 목표 지역으로 정확하게 유도하여 적의 공격이 자신의 공격이 되돌리도록 합니다.
 ac.ability.vecmanip.plasma_cannon.desc=대량의 공기 흐름을 극도의 정밀도로 조작하여 플라즈마 본체를 형성합니다. 처참한 폭발을 일으키기 위해 버리세요.
 
 # Command

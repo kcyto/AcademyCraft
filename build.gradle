@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -74,11 +74,11 @@ dependencies {
 
     // Optional dependencies
     deobfCompile "codechicken:CodeChickenLib:1.12.2-${project.ccl_ver}:universal"
-    deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302"
-    deobfCompile "cofh:RedstoneFlux:1.12-2.0.0.1:universal"
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.685"
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.20.685"
-    deobfCompile "CraftTweaker2:ZenScript:4.1.20.685"
+    deobfCompile "mezz.jei:jei_1.12.2:4.16.1.1013"
+    deobfCompile "cofh:RedstoneFlux:1.12-2.1.0.7:universal"
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.703"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.20.703"
+    deobfCompile "CraftTweaker2:ZenScript:4.1.20.703"
     deobfCompile "net.industrial-craft:industrialcraft-2:2.8.222-ex112"
 }
 
