@@ -51,8 +51,8 @@ private object VecReflectionContext {
     entity.motionX = -entity.motionX
     entity.motionY = -entity.motionY
     entity.motionZ = -entity.motionZ
-    entity.rotationYaw = 180 - player.rotationYaw
-    entity.rotationPitch = -player.rotationPitch
+    entity.rotationYaw = (entity.rotationYaw + 180) % 360
+    entity.rotationPitch = -entity.rotationPitch
   }
 }
 
@@ -86,19 +86,16 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
       EntityAffection.getAffectInfo(entity) match {
         case Affected(difficulty) =>
           entity match {
-            case fireball : EntityFireball =>
+            case fireball: EntityFireball =>
               if(consumeEntity(difficulty)) {
                 createNewFireball(fireball)
-
                 ctx.addSkillExp(difficulty * 0.0008f)
                 sendToClient(MSG_REFLECT_ENTITY, entity)
               }
             case _ =>
               if(consumeEntity(difficulty)) {
                 reflect(entity, player)
-
                 EntityAffection.mark(entity)
-
                 ctx.addSkillExp(difficulty * 0.0008f)
                 sendToClient(MSG_REFLECT_ENTITY, entity)
               }
@@ -115,9 +112,13 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
 
   private def createNewFireball(source : EntityFireball): Boolean = {
     source.setDead()
-
+    val originalVelocity = new Vec3d(source.motionX, source.motionY, source.motionZ)
+    val reversedVelocity = originalVelocity.scale(-1.0)
     val shootingEntity = source.shootingEntity
     var fireball : EntityFireball = null
+    fireball.motionX = reversedVelocity.x
+    fireball.motionY = reversedVelocity.y
+    fireball.motionZ = reversedVelocity.z
 
     source match {
       case l : EntityLargeFireball =>
@@ -136,8 +137,6 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
 
     fireball.setPosition(source.posX, source.posY, source.posZ)
-    val vel = new Vec3d(-source.motionX, -source.motionY, -source.motionZ)
-    setMotion(fireball, vel)
     EntityAffection.mark(fireball)
     world().spawnEntity(fireball)
     true
