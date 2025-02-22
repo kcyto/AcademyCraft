@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotMFItem extends Slot {
 
-    private int slot;
+    private final int slot;
 
     public SlotMFItem(IInventory inv, int _slot, int x, int y) {
         super(inv, _slot, x, y);

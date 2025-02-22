@@ -43,7 +43,7 @@ public class TerminalInstallEffect extends AuxGui {
     public TerminalInstallEffect() {
         gui.addWidget("main", loaded.getWidget("main").copy());
         gui.getWidget("main/progbar").listen(FrameEvent.class, (w, e) -> {
-            double prog = (double) this.getTimeActive() / ANIM_LENGTH;
+            double prog = this.getTimeActive() / ANIM_LENGTH;
             if(this.getTimeActive() >= ANIM_LENGTH + WAIT) {
                 dispose();
                 TerminalUI.keyHandler.onKeyUp();
@@ -71,9 +71,9 @@ public class TerminalInstallEffect extends AuxGui {
 
     private void initBlender(Widget w) {
         w.listen(FrameEvent.class, new IGuiEventHandler<FrameEvent>() {
-            DrawTexture tex = DrawTexture.get(w);
-            TextBox text = TextBox.get(w);
-            ProgressBar bar = ProgressBar.get(w);
+            final DrawTexture tex = DrawTexture.get(w);
+            final TextBox text = TextBox.get(w);
+            final ProgressBar bar = ProgressBar.get(w);
             
             int texA, textA, barA;
             {

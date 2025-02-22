@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Paindar on 2016/8/31.
@@ -66,10 +67,6 @@ public class MessageConfig implements IMessage
     {
         String string=config.root().render();
 
-        try {
-            byteBuf.writeBytes(string.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        byteBuf.writeBytes(string.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -55,7 +55,7 @@ public class FleshRipping extends Skill
 
     public static class FRContext extends Context{
 
-        private float exp = ctx.getSkillExp();
+        private final float exp = ctx.getSkillExp();
 
         private AttackTarget target = null;
 
@@ -152,8 +152,8 @@ public class FleshRipping extends Skill
 
         private EntityMarker marker = null;
 
-        private Color DISABLED_COLOR  = new Color(74, 74, 74, 160);
-        private Color THREATENING_COLOR = new Color(185, 25, 25, 180);
+        private final Color DISABLED_COLOR  = new Color(74, 74, 74, 160);
+        private final Color THREATENING_COLOR = new Color(185, 25, 25, 180);
 
         @Listener(channel=MSG_TERMINATED, side=Side.CLIENT)
         private void l_terminated(){

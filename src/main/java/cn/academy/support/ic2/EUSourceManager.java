@@ -27,7 +27,6 @@ public class EUSourceManager implements IEnergyBlockManager {
     @Override
     public void setEnergy(TileEntity tile, double energy) {
         // NOT SUPPORTED
-        return;
     }
 
     @Override

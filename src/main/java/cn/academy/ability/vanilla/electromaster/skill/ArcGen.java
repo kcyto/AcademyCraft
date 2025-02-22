@@ -60,12 +60,12 @@ public class ArcGen extends Skill
             super(player, ArcGen.instance);
         }
 
-        private float damage = lerpf(5, 9, ctx.getSkillExp());
-        private float igniteProb = lerpf(0, 0.6f, ctx.getSkillExp());
-        private double fishProb = ctx.getSkillExp() > 0.5f? 0.1 : 0;
-        private boolean canStunEnemy = ctx.getSkillExp() >= 1.0f;
-        private float range = lerpf(6, 15, ctx.getSkillExp());
-        private float cp = lerpf(30, 70, ctx.getSkillExp());
+        private final float damage = lerpf(5, 9, ctx.getSkillExp());
+        private final float igniteProb = lerpf(0, 0.6f, ctx.getSkillExp());
+        private final double fishProb = ctx.getSkillExp() > 0.5f? 0.1 : 0;
+        private final boolean canStunEnemy = ctx.getSkillExp() >= 1.0f;
+        private final float range = lerpf(6, 15, ctx.getSkillExp());
+        private final float cp = lerpf(30, 70, ctx.getSkillExp());
 
         private boolean consume()
         {

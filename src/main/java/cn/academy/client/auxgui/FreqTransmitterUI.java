@@ -65,7 +65,7 @@ public class FreqTransmitterUI extends AuxGui {
             MSG_LINK_NODE = "link_node",
             MSG_LINK_USER = "link_user";
 
-        private static Object delegate = NetworkMessage.staticCaller(Syncs.class);
+        private static final Object delegate = NetworkMessage.staticCaller(Syncs.class);
 
         public static void querySSID(IWirelessMatrix matrix, Future<String> future) {
             send(MSG_QUERY_SSID, matrix, future);
@@ -435,7 +435,7 @@ public class FreqTransmitterUI extends AuxGui {
                 sb.append('*');
             
             font.draw(String.format("SSID: %s", ssid), 10, 5, new FontOption(10, 0xffbfbfbf));
-            font.draw(String.format("PASS: %s", sb.toString()), 10, 15, new FontOption(10, 0xffffffff));
+            font.draw(String.format("PASS: %s", sb), 10, 15, new FontOption(10, 0xffffffff));
             font.draw(local("s1_0"), 10, 25, new FontOption(10, 0xff30ffff));
             GL11.glPopMatrix();
         }
@@ -494,7 +494,7 @@ public class FreqTransmitterUI extends AuxGui {
                 sb.append('*');
 
             font.draw(String.format("NAME: %s", name), 10, 5, new FontOption(10, 0xffbfbfbf));
-            font.draw(String.format("PASS: %s", sb.toString()), 10, 15, new FontOption(10, 0xffffffff));
+            font.draw(String.format("PASS: %s", sb), 10, 15, new FontOption(10, 0xffffffff));
             font.draw(local("s1_1"), 10, 25, new FontOption(10, 0xff30ffff));
             GL11.glPopMatrix();
         }

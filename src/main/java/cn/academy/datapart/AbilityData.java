@@ -44,9 +44,9 @@ public class AbilityData extends DataPart<EntityPlayer> {
     @SerializeIncluded
     private int catID = -1;
     @SerializeIncluded
-    private BitSet learnedSkills;
+    private final BitSet learnedSkills;
     @SerializeIncluded
-    private float[] skillExps;
+    private final float[] skillExps;
     @SerializeIncluded
     private int level;
     @SerializeIncluded

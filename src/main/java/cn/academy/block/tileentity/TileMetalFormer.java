@@ -60,8 +60,8 @@ public class TileMetalFormer extends TileReceiverBase implements ISidedInventory
                     "academy:textures/guis/icons/icon_former_" +
                     this.toString().toLowerCase() + ".png");
         }
-    }; 
-    
+    }
+
     public static final int 
         SLOT_IN = 0,
         SLOT_OUT = 1,

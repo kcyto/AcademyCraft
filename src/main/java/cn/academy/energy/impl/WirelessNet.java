@@ -28,18 +28,18 @@ public class WirelessNet {
     private final WiWorldData data;
     World world;
 
-    private List<VWNode> nodes = new LinkedList<>();
+    private final List<VWNode> nodes = new LinkedList<>();
 
-    private List<VWNode> toRemoveNodes = new ArrayList<>();
+    private final List<VWNode> toRemoveNodes = new ArrayList<>();
 
-    private VWMatrix matrix;
+    private final VWMatrix matrix;
 
     private String ssid;
     private String password;
 
     private double buffer;
 
-    private int aliveUpdateCounter = UPDATE_INTERVAL;
+    private final int aliveUpdateCounter = UPDATE_INTERVAL;
 
     private boolean disposed = false;
 

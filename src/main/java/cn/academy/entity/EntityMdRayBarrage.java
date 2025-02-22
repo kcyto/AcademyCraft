@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EntityMdRayBarrage extends EntityRayBase {
 
-    private SubRay[] subrays;
+    private final SubRay[] subrays;
 
     public EntityMdRayBarrage(World world, double x, double y, double z, float yaw, float pitch) {
         super(world);

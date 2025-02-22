@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class WorldGenPhaseLiq extends WorldGenerator {
 
-    private Block theBlock;
+    private final Block theBlock;
 
     public WorldGenPhaseLiq() {
         this.theBlock = ACBlocks.imag_phase;

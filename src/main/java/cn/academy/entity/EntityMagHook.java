@@ -30,11 +30,11 @@ import net.minecraft.world.World;
 public class EntityMagHook extends EntityAdvanced
 {
 
-    private static final DataParameter<Boolean> IS_HIT = EntityDataManager.<Boolean>createKey(EntityMagHook.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<EnumFacing> HIT_SIDE = EntityDataManager.<EnumFacing>createKey(EntityMagHook.class, DataSerializers.FACING);
-    private static final DataParameter<Integer> HOOK_X = EntityDataManager.<Integer>createKey(EntityMagHook.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> HOOK_Y = EntityDataManager.<Integer>createKey(EntityMagHook.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> HOOK_Z = EntityDataManager.<Integer>createKey(EntityMagHook.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> IS_HIT = EntityDataManager.createKey(EntityMagHook.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<EnumFacing> HIT_SIDE = EntityDataManager.createKey(EntityMagHook.class, DataSerializers.FACING);
+    private static final DataParameter<Integer> HOOK_X = EntityDataManager.createKey(EntityMagHook.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> HOOK_Y = EntityDataManager.createKey(EntityMagHook.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> HOOK_Z = EntityDataManager.createKey(EntityMagHook.class, DataSerializers.VARINT);
     {
         Rigidbody rb = new Rigidbody();
         rb.gravity = 0.05;

@@ -195,7 +195,7 @@ public class EntityBlock extends EntityAdvanced {
                         }
                     }
                     if (!isPlace) {
-                        AcademyCraft.log.error("EntityBlock Lost: " + event.result.toString());
+                        AcademyCraft.log.error("EntityBlock Lost: " + event.result);
                     }
                     setDead();
                 }

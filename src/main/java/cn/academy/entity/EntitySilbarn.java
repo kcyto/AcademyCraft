@@ -62,7 +62,8 @@ public class EntitySilbarn extends EntityAdvanced
         particles = new ParticleFactory(p);
         particles.addDecorator(new ParticleDecorator() {
             
-            double vx, vy;
+            final double vx;
+            final double vy;
             final double fac = 25;
             {
                 double phi = RandUtils.nextDouble() * Math.PI * 2;
@@ -239,7 +240,7 @@ public class EntitySilbarn extends EntityAdvanced
         @Override
         public void doRender(EntitySilbarn var1, double x, double y,
                 double z, float var8, float var9) {
-            EntitySilbarn sibarn = (EntitySilbarn) var1;
+            EntitySilbarn sibarn = var1;
             if(sibarn.hit)
                 return;
             GL11.glPushMatrix();

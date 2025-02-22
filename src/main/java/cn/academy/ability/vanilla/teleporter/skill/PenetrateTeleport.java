@@ -49,14 +49,14 @@ public class PenetrateTeleport extends Skill
         }
 
         private Dest dest = null;
-        private float exp = ctx.getSkillExp();
-        private float minDist = 0.5f;
-        private float maxDist = getMaxDistance(ctx.getSkillExp());
+        private final float exp = ctx.getSkillExp();
+        private final float minDist = 0.5f;
+        private final float maxDist = getMaxDistance(ctx.getSkillExp());
         private float curDist = maxDist;
 
         @SideOnly(Side.CLIENT)
         private EntityTPMarking mark;
-        private float mwSpd=1;
+        private final float mwSpd=1;
 
         @Listener(channel=MSG_EXECUTE, side=Side.SERVER)
         private void s_execute(float dist)

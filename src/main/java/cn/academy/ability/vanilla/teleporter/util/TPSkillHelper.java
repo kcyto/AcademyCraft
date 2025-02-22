@@ -95,7 +95,7 @@ public class TPSkillHelper {
         throw new IllegalArgumentException();
     }
 
-    private static float rates[] = { 1.3f, 1.6f, 2.6f };
+    private static final float[] rates = { 1.3f, 1.6f, 2.6f };
 
     private static float tryLerp(float a, float b, float l) {
         if (l == -1) return 0;

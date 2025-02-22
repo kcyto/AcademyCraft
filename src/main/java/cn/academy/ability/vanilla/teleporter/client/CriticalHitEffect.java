@@ -20,7 +20,7 @@ public class CriticalHitEffect {
     private CriticalHitEffect() {}
 
     @RegEventHandler
-    private static CriticalHitEffect instance = new CriticalHitEffect();
+    private static final CriticalHitEffect instance = new CriticalHitEffect();
 
     @SubscribeEvent
     public void onTPCritHit(TPCritHitEvent event) {

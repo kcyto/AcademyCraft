@@ -19,9 +19,9 @@ public class RenderSolarGen extends RenderBlockMulti<TileSolarGen> {
 
     private final float SCALE = 0.014f;
 
-    private ObjLegacyRender _mdl = Resources.getModel("solar");
+    private final ObjLegacyRender _mdl = Resources.getModel("solar");
 
-    private ResourceLocation _texture = Resources.getTexture("models/solar");
+    private final ResourceLocation _texture = Resources.getTexture("models/solar");
 
     @Override
     public void drawAtOrigin(TileSolarGen te) {

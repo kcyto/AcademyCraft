@@ -22,8 +22,8 @@ import java.util.List;
 public class MetalFormerRecipeCategory extends IACRecipeCategory
 {
     public static List<IRecipeWrapper> recipeWrapper = loadCraftingRecipes();
-    private static ResourceLocation bg = new ResourceLocation("academy", "textures/guis/nei_metalformer.png");
-    private IGuiHelper guiHelper;
+    private static final ResourceLocation bg = new ResourceLocation("academy", "textures/guis/nei_metalformer.png");
+    private final IGuiHelper guiHelper;
 
     public MetalFormerRecipeCategory(IGuiHelper guiHelper)
     {

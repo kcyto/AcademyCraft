@@ -29,7 +29,7 @@ public class TerminalData extends DataPart<EntityPlayer> {
     }
 
     @SerializeIncluded
-    private List<Integer> installedNameHashes = new ArrayList<>();
+    private final List<Integer> installedNameHashes = new ArrayList<>();
     @SerializeIncluded
     private boolean isInstalled;
 

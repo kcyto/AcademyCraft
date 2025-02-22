@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public enum DonatorList {
                     con.setDoInput(true);
 
                     InputStream is = con.getInputStream();
-                    String text = IOUtils.toString(is, "UTF-8");
+                    String text = IOUtils.toString(is, StandardCharsets.UTF_8);
                     ResponseData rsp = _gson.fromJson(text, ResponseData.class);
 
                     if (rsp.success) {

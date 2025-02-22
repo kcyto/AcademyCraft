@@ -109,7 +109,7 @@ public class EntityRayBase extends EntityAdvanced implements IRay {
     }
     
     public long getLifeMS() {
-        return life * 50;
+        return life * 50L;
     }
 
     //TODO Add glow texture alpha wiggle

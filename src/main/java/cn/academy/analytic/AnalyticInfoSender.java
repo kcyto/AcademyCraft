@@ -20,13 +20,13 @@ public class AnalyticInfoSender {
     public void linkStart(Map<String,AnalyticDto> sourceMap){
         TimerTask task = new AnalysisTask(sourceMap);
         Timer timer = new Timer();
-        timer.schedule(task,0,second*1000);
+        timer.schedule(task,0,second* 1000L);
     }
 }
 
 class AnalysisTask extends TimerTask{
-    private Map<String,AnalyticDto> sourceMap;
-    private String voidclRBQ="https://ac.li-dev.cn/analytics";
+    private final Map<String,AnalyticDto> sourceMap;
+    private final String voidclRBQ="https://ac.li-dev.cn/analytics";
     AnalysisTask(Map<String,AnalyticDto> sourceMap){
         this.sourceMap=sourceMap;
     }

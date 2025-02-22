@@ -139,7 +139,6 @@ public class PropertyElements {
             widget.getGui().removeFocus();
             
             if(key == Keyboard.KEY_ESCAPE) {
-                ;
             } else {
                 prop.set(key);
             }

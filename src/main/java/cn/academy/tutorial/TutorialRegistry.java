@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class TutorialRegistry {
 
-    private static HashMap<String,ACTutorial> tutorials=new LinkedHashMap<>();
+    private static final HashMap<String,ACTutorial> tutorials=new LinkedHashMap<>();
 
     public static void addTutorials(ACTutorial...tutorial) {
         for(ACTutorial t : tutorial){

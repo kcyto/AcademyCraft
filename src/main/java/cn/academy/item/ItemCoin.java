@@ -37,7 +37,8 @@ import java.util.Map;
 public class ItemCoin extends Item {
 
     // Key: PlayerName
-    private static Map<String, EntityCoinThrowing> client = new HashMap<>(), server = new HashMap<>();
+    private static final Map<String, EntityCoinThrowing> client = new HashMap<>();
+    private static final Map<String, EntityCoinThrowing> server = new HashMap<>();
 
     private final ModelResourceLocation _modelLocation = new ModelResourceLocation("academy:coin", "inventory");
 

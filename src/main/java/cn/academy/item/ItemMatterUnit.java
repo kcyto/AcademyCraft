@@ -55,7 +55,7 @@ public class ItemMatterUnit extends Item {
         
     }
     
-    private static List<MatterMaterial> materials = new ArrayList<>();
+    private static final List<MatterMaterial> materials = new ArrayList<>();
     
     public static final MatterMaterial MAT_NONE = new MatterMaterial("none", Blocks.AIR);
     public static final MatterMaterial MAT_PHASE_LIQUID = new MatterMaterial("phase_liquid", ACBlocks.imag_phase);

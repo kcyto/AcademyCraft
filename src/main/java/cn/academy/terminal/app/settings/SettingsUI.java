@@ -31,7 +31,7 @@ public class SettingsUI extends CGuiScreen {
 
     static WidgetContainer document;
 
-    private static Map<String, List<UIProperty>> properties = new HashMap<>();
+    private static final Map<String, List<UIProperty>> properties = new HashMap<>();
     static {
         addProperty(PropertyElements.CHECKBOX, "generic", "attackPlayer", true, true);
         addProperty(PropertyElements.CHECKBOX, "generic", "destroyBlocks", true, true);

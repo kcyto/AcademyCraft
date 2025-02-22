@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
 @RegEntityRender(EntityBlock.class)
 public class RenderEntityBlock extends Render<EntityBlock> {
 
-    private Field _fieldBlockType;
+    private final Field _fieldBlockType;
 
     public RenderEntityBlock(RenderManager renderManager) {
         super(renderManager);

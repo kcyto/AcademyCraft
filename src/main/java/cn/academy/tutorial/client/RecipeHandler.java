@@ -65,14 +65,14 @@ public enum RecipeHandler {
     instance;
 
     private WidgetContainer windows;
-    private ResourceLocation tex = Resources.getTexture("guis/tutorial/crafting_grid");
+    private final ResourceLocation tex = Resources.getTexture("guis/tutorial/crafting_grid");
 
     @StateEventCallback
     private static void __init(FMLInitializationEvent ev) {
         instance.windows = CGUIDocument.read(new ResourceLocation("academy:guis/tutorial_windows.xml"));
     }
 
-    private Field _$ShapedOreRecipe$fieldWidth;
+    private final Field _$ShapedOreRecipe$fieldWidth;
     {
         try {
             _$ShapedOreRecipe$fieldWidth = ShapedOreRecipe.class.getDeclaredField("width");
@@ -143,7 +143,7 @@ public enum RecipeHandler {
     @SideOnly(Side.CLIENT)
     static class StackDisplay extends Widget {
 
-        private static Minecraft mc = Minecraft.getMinecraft();
+        private static final Minecraft mc = Minecraft.getMinecraft();
 //        private static RenderItem itemRender = RenderItem.getInstance();
         static final double ALTERNATE_TIME = 2;
 

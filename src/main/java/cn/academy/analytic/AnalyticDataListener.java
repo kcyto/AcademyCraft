@@ -36,7 +36,7 @@ import java.util.TimeZone;
 public class AnalyticDataListener {
     private AnalyticDto serverSource;
     private static final String CHANNEL="analysisChannel";
-    private Map<String,AnalyticDto> sourceMap;
+    private final Map<String,AnalyticDto> sourceMap;
     public static final AnalyticDataListener instance = new AnalyticDataListener();
     private static AnalyticInfoSender sender;
     private AnalyticDataListener(){
@@ -219,7 +219,7 @@ public class AnalyticDataListener {
 }
 
 class DelaySender extends Thread{
-    private EntityPlayer player;
+    private final EntityPlayer player;
     private String serverIp;
     DelaySender(EntityPlayer player){
         this.player=player;

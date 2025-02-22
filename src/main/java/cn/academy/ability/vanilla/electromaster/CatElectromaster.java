@@ -121,10 +121,10 @@ public class CatElectromaster extends Category {
         return false;
     }
 
-    private static HashSet<Block> normalMetalBlocks = new HashSet<>();
-    private static HashSet<Block> weakMetalBlocks = new HashSet<>();
+    private static final HashSet<Block> normalMetalBlocks = new HashSet<>();
+    private static final HashSet<Block> weakMetalBlocks = new HashSet<>();
 
-    private static HashSet<Class<? extends Entity>> metalEntities = new HashSet<>();
+    private static final HashSet<Class<? extends Entity>> metalEntities = new HashSet<>();
 
     @StateEventCallback
     public static void init(FMLInitializationEvent event) {

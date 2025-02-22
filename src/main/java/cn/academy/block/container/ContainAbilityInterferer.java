@@ -18,7 +18,7 @@ public class ContainAbilityInterferer extends TechUIContainer<TileAbilityInterfe
 {
     class SlotAIItem extends Slot
     {
-        private int slot;
+        private final int slot;
 
         public SlotAIItem(IInventory inv, int _slot, int x, int y) {
             super(inv, _slot, x, y);

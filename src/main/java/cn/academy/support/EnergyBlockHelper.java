@@ -11,7 +11,7 @@ import java.util.List;
 public class EnergyBlockHelper {
 
 
-    private static List<IEnergyBlockManager> handlers = new ArrayList<>();
+    private static final List<IEnergyBlockManager> handlers = new ArrayList<>();
 
     public static void register(IEnergyBlockManager handler) {
         handlers.add(handler);
@@ -56,7 +56,7 @@ public class EnergyBlockHelper {
         return 0;
     }
 
-    public static interface IEnergyBlockManager {
+    public interface IEnergyBlockManager {
 
         boolean isSupported(TileEntity tile);
 

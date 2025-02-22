@@ -30,9 +30,9 @@ public class ACHud extends AuxGui {
         AuxGui.register(instance);
     }
     
-    private List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
     
-    private CGui gui = new CGui();
+    private final CGui gui = new CGui();
 
     private ACHud() {
         foreground = false;

@@ -54,7 +54,7 @@ public class CooldownData extends DataPart<EntityPlayer> {
     private static final SkillCooldown EMPTY_COOLDOWN = new SkillCooldown(100, 0);
 
     @SerializeIncluded
-    private Map<Integer, SkillCooldown> cooldownMap = new HashMap<>();
+    private final Map<Integer, SkillCooldown> cooldownMap = new HashMap<>();
     private final TickScheduler scheduler = new TickScheduler();
 
     {

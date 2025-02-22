@@ -150,7 +150,7 @@ public class GuiTutorial extends CGuiScreen {
         }
     }
 
-    private Map<ACTutorial, CachedRenderInfo> cached = new HashMap<>();
+    private final Map<ACTutorial, CachedRenderInfo> cached = new HashMap<>();
 
     private CachedRenderInfo renderInfo(ACTutorial tut) {
         if (!cached.containsKey(tut)) {

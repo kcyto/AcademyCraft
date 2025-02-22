@@ -22,8 +22,8 @@ import java.util.List;
 public class FusorRecipeCategory extends IACRecipeCategory
 {
     public static List<IRecipeWrapper> recipeWrapper = loadCraftingRecipes();
-    private static ResourceLocation bg = new ResourceLocation("academy", "textures/guis/nei_fusor.png");
-    private IGuiHelper guiHelper;
+    private static final ResourceLocation bg = new ResourceLocation("academy", "textures/guis/nei_fusor.png");
+    private final IGuiHelper guiHelper;
 
     public FusorRecipeCategory(IGuiHelper guiHelper)
     {

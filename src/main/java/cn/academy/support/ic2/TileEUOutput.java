@@ -21,7 +21,7 @@ import static cn.academy.support.ic2.IC2Support.if2eu;
 @Optional.Interface(modid = IC2Support.IC2_MODID, iface = IC2Support.IC2_IFACE)
 public class TileEUOutput extends TileReceiverBase implements IEnergySource {
     
-    private boolean isRegistered = false;
+    private final boolean isRegistered = false;
 
     public TileEUOutput() {
         super("ac_eu_output", 0, 2000, 100);

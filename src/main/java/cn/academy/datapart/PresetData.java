@@ -262,7 +262,7 @@ public class PresetData extends DataPart<EntityPlayer> {
         
     }
 
-    public static enum Events {
+    public enum Events {
         @RegEventHandler()
         instance;
         

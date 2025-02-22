@@ -60,7 +60,8 @@ public class TileImagFusor extends TileReceiverBase implements IFluidHandler, IS
     private IFRecipe currentRecipe;
     private double workProgress;
     
-    private int checkCooldown = 10, syncCooldown = SYNC_INTV;
+    private int checkCooldown = 10;
+    private final int syncCooldown = SYNC_INTV;
 
     public TileImagFusor() {
         super("imag_fusor", 5, 2000, IFConstants.LATENCY_MK1);

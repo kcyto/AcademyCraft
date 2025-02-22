@@ -8,6 +8,6 @@ import net.minecraft.util.math.Vec3d;
  */
 public interface IPointFactory {
     
-    public Vec3d next();
+    Vec3d next();
     
 }

@@ -21,7 +21,7 @@ import org.lwjgl.util.Color;
 public class RippleMarkRender extends Render<EntityRippleMark> {
     
     final double CYCLE = 3.6;
-    final double timeOffsets[] = { 0, -1.2, -2.4};
+    final double[] timeOffsets = { 0, -1.2, -2.4};
     LegacyMesh mesh;
     SimpleMaterial material;
     
@@ -47,7 +47,7 @@ public class RippleMarkRender extends Render<EntityRippleMark> {
 
     @Override
     public void doRender(EntityRippleMark entity, double x, double y, double z, float a, float b) {
-        EntityRippleMark mark = (EntityRippleMark) entity;
+        EntityRippleMark mark = entity;
         double dt = GameTimer.getTime() - mark.creationTime;
         
         GL11.glDisable(GL11.GL_CULL_FACE);

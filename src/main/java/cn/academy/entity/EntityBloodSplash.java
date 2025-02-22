@@ -72,7 +72,7 @@ public class EntityBloodSplash extends EntityAdvanced
 
         @Override
         public void doRender(EntityBloodSplash entity, double x, double y, double z, float a, float b) {
-            EntityBloodSplash splash = (EntityBloodSplash) entity;
+            EntityBloodSplash splash = entity;
             icon = (SPLASH[MathUtils.clampi(0, SPLASH.length - 1, splash.frame)]);
             this.size = splash.getSize();
 

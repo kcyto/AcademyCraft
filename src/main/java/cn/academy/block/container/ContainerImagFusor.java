@@ -58,7 +58,7 @@ public class ContainerImagFusor extends TechUIContainer<TileImagFusor> {
      */
     private static class SlotCrystal extends Slot {
 
-        private int slot;
+        private final int slot;
 
         public SlotCrystal(IInventory inv, int _slot, int x, int y) {
             super(inv, _slot, x, y);

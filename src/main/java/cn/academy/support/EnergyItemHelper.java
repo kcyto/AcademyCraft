@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class EnergyItemHelper {
 
-    private static List<EnergyItemManager> supported = new ArrayList<>();
+    private static final List<EnergyItemManager> supported = new ArrayList<>();
 
     @StateEventCallback
     private static void init(FMLInitializationEvent event) {

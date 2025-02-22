@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AppRegistry {
 
-    private static List<App> appList = new ArrayList<>();
+    private static final List<App> appList = new ArrayList<>();
 
     public static void register(App app) {
         appList.add(app);

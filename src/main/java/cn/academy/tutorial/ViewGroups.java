@@ -49,7 +49,7 @@ public final class ViewGroups {
 
     // This class used a SideOnly hack to make user be able to specify display on init without considering side only issue.
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static final ViewGroup nothing = () -> null;
 
@@ -136,8 +136,8 @@ public final class ViewGroups {
     @SideOnly(Side.CLIENT)
     private static ViewGroup recipesImpl(Item item) {
         return new ViewGroup() {
-            Widget[] result = RecipeHandler.instance.recipeOfItem(item);
-            ItemStack stack = new ItemStack(item, 1);
+            final Widget[] result = RecipeHandler.instance.recipeOfItem(item);
+            final ItemStack stack = new ItemStack(item, 1);
 
             @Override
             public Widget[] getSubViews() {

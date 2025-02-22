@@ -48,7 +48,7 @@ public class ThreateningTeleport extends Skill
     public static class TTContext extends Context
     {
         public static final String MSG_EXECUTE = "execute";
-        private float exp = ctx.getSkillExp();
+        private final float exp = ctx.getSkillExp();
         private boolean attacked =false;
 
         public TTContext(EntityPlayer p)
@@ -164,10 +164,10 @@ public class ThreateningTeleport extends Skill
     @RegClientContext(TTContext.class)
     public static class TTContextC extends ClientContext
     {
-        private Color COLOR_NORMAL = new Color(0xba,0xba,0xba,0xba);
-        private Color COLOR_THREATENING = new Color(0xba,0xb2,0x23,0x2a);
+        private final Color COLOR_NORMAL = new Color(0xba,0xba,0xba,0xba);
+        private final Color COLOR_THREATENING = new Color(0xba,0xb2,0x23,0x2a);
         private EntityMarker marker = null;
-        private TTContext par;
+        private final TTContext par;
         private static final String MSG_EXECUTE = TTContext.MSG_EXECUTE;
 
         public TTContextC(TTContext par)

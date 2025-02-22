@@ -38,7 +38,7 @@ public class TileWindGenBase extends TileGeneratorBase implements IMultiTile {
     private boolean noObstacle;
     private Completeness completeness = Completeness.BASE_ONLY;
 
-    private TickScheduler scheduler = new TickScheduler();
+    private final TickScheduler scheduler = new TickScheduler();
 
     {
         scheduler.every(10).run(() -> {

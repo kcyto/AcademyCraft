@@ -19,10 +19,10 @@ import java.lang.reflect.Method;
 
 @SideOnly(Side.CLIENT)
 public class VanillaHandRenderer {
-    private static Field _fFarPlaneDistance = ReflectionUtils.getObfField(EntityRenderer.class, "farPlaneDistance", "field_78530_s");
-    private static Method _mGetFOVModifier = ReflectionUtils.getObfMethod(EntityRenderer.class, "getFOVModifier", "func_78481_a",
+    private static final Field _fFarPlaneDistance = ReflectionUtils.getObfField(EntityRenderer.class, "farPlaneDistance", "field_78530_s");
+    private static final Method _mGetFOVModifier = ReflectionUtils.getObfMethod(EntityRenderer.class, "getFOVModifier", "func_78481_a",
         java.lang.Float.TYPE, java.lang.Boolean.TYPE);
-    private static Method _mViewBobbing = ReflectionUtils.getObfMethod(EntityRenderer.class, "applyBobbing", "func_78475_f",
+    private static final Method _mViewBobbing = ReflectionUtils.getObfMethod(EntityRenderer.class, "applyBobbing", "func_78475_f",
         java.lang.Float.TYPE);
 
     public static void renderHand(float partialTicks) {

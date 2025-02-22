@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ACTutorial {
     private Condition condition = Conditions.alwaysTrue();
     private boolean defaultInstalled = true;
 
-    private List<ViewGroup> previewHandlers = new ArrayList<>();
+    private final List<ViewGroup> previewHandlers = new ArrayList<>();
 
     public ACTutorial(String id) {
         this.id=id;
@@ -70,7 +71,7 @@ public class ACTutorial {
             if (stream == null) {
                 return unknown;
             } else {
-                return IOUtils.toString(new InputStreamReader(stream, Charset.forName("UTF-8").newDecoder()));
+                return IOUtils.toString(new InputStreamReader(stream, StandardCharsets.UTF_8.newDecoder()));
             }
         } catch (NullPointerException|IOException e) {
             return unknown;

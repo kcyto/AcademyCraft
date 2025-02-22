@@ -83,7 +83,7 @@ public class WirelessHelper {
         return getNodeConn(gen) != null;
     }
 
-    private static List<BlockPos> _blockPosBuffer = new ArrayList<>();
+    private static final List<BlockPos> _blockPosBuffer = new ArrayList<>();
 
     /**
      * Get a list of IWirelessNode that are linkable and can reach the given position.

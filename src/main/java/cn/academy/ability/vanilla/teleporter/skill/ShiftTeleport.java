@@ -79,7 +79,7 @@ public class ShiftTeleport extends Skill
             super(p, ShiftTeleport.instance);
         }
 
-        private float exp = ctx.getSkillExp();
+        private final float exp = ctx.getSkillExp();
         private boolean attacked = false;
 
         @Listener(channel=MSG_MADEALIVE, side= Side.SERVER)
@@ -240,8 +240,8 @@ public class ShiftTeleport extends Skill
     @RegClientContext(STContext.class)
     public static class STContextC extends ClientContext
     {
-        private Color CRL_BLOCK_MARKER = new Color(139, 139, 139, 180);
-        private Color CRL_ENTITY_MARKER = new Color(235, 81, 81, 180);
+        private final Color CRL_BLOCK_MARKER = new Color(139, 139, 139, 180);
+        private final Color CRL_ENTITY_MARKER = new Color(235, 81, 81, 180);
 
         private EntityMarker blockMarker = null;
         private List<EntityMarker> targetMarkers = null;

@@ -34,8 +34,8 @@ public class CustomizeUI extends CGuiScreen {
 
     private static WidgetContainer doc;
 
-    private Widget main;
-    private Widget body;
+    private final Widget main;
+    private final Widget body;
 
     {
         main = doc.getWidget("main").copy();

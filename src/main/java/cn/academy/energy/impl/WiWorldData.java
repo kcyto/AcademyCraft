@@ -50,7 +50,7 @@ public class WiWorldData extends WorldSavedData {
     
     //-----WEN-----
     
-    private IBlockSelector filterWirelessBlocks = (world, x, y, z, block) -> {
+    private final IBlockSelector filterWirelessBlocks = (world, x, y, z, block) -> {
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         return te instanceof IWirelessMatrix || te instanceof IWirelessNode;
     };
@@ -64,7 +64,7 @@ public class WiWorldData extends WorldSavedData {
     /**
      * Internal, used to prevent concurrent modification.
      */
-    private List<WirelessNet> toRemove = new ArrayList<>();
+    private final List<WirelessNet> toRemove = new ArrayList<>();
     
     private void tickNetwork() {
         for(WirelessNet net : toRemove) {

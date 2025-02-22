@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class CustomWorldGen {
 
-    private WorldGenerator gen;
+    private final WorldGenerator gen;
     
     int yLimit;
     int densityPerChunk;

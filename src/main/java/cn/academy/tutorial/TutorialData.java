@@ -43,9 +43,9 @@ public class TutorialData extends DataPart<EntityPlayer> {
     private static final String MSG_ACTIVATE = "activate";
 
     @SerializeIncluded
-    private BitSet savedConditions = new BitSet();
+    private final BitSet savedConditions = new BitSet();
     @SerializeIncluded
-    private HashSet<String> activatedTuts = new HashSet<>();
+    private final HashSet<String> activatedTuts = new HashSet<>();
     @SerializeIncluded
     private boolean tutorialAcquired = false;
     @SerializeIncluded

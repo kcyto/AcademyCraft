@@ -84,11 +84,11 @@ public class MagManip extends Skill
         final static String MSG_SYNC_ENTITY_RSP = "rsp_sync_ent";
 
 
-        private float consumption = MathUtils.lerpf(140, 270, ctx.getSkillExp());
-        private float overload = MathUtils.lerpf(35, 20, ctx.getSkillExp());
-        private int cooldown = (int) MathUtils.lerpf(60, 40, ctx.getSkillExp());
-        private float damage = MathUtils.lerpf(8, 15, ctx.getSkillExp());
-        private float speed = MathUtils.lerpf(0.5f, 1.0f, ctx.getSkillExp());
+        private final float consumption = MathUtils.lerpf(140, 270, ctx.getSkillExp());
+        private final float overload = MathUtils.lerpf(35, 20, ctx.getSkillExp());
+        private final int cooldown = (int) MathUtils.lerpf(60, 40, ctx.getSkillExp());
+        private final float damage = MathUtils.lerpf(8, 15, ctx.getSkillExp());
+        private final float speed = MathUtils.lerpf(0.5f, 1.0f, ctx.getSkillExp());
 
         public State state = State.StateMoving;
         MagManipEntityBlock entity = null;

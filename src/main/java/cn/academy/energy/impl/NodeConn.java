@@ -31,11 +31,11 @@ public class NodeConn {
 
     private boolean disposed = false;
     
-    private List<VNReceiver> receivers = new LinkedList<>();
-    private List<VNGenerator> generators = new LinkedList<>();
+    private final List<VNReceiver> receivers = new LinkedList<>();
+    private final List<VNGenerator> generators = new LinkedList<>();
 
-    private List<VNReceiver> toRemoveReceivers = new ArrayList<>();
-    private List<VNGenerator> toRemoveGenerators = new ArrayList<>();
+    private final List<VNReceiver> toRemoveReceivers = new ArrayList<>();
+    private final List<VNGenerator> toRemoveGenerators = new ArrayList<>();
     
     public NodeConn(WiWorldData _data, VNNode _node) {
         data = _data;

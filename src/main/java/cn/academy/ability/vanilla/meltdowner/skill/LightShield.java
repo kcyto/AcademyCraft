@@ -70,10 +70,10 @@ public class LightShield extends Skill
     
     public static class LSContext extends Context
     {
-        private Predicate<Entity> basicSelector = EntitySelectors.everything();
+        private final Predicate<Entity> basicSelector = EntitySelectors.everything();
         private int ticks = 0;
         private int lastAbsorb = -1;// The tick last the shield absorbed damage.
-        private float exp = ctx.getSkillExp();
+        private final float exp = ctx.getSkillExp();
         
         private final float MAX_TIME = lerpf(120, 180, exp);
         private int getCooldown(int ct){return (int)lerpf(2*ct, ct, exp);}
