@@ -48,9 +48,12 @@ private object VecReflectionContext {
   final val MSG_REFLECT_ENTITY = "reflect_ent"
 
   def reflect(entity: Entity, player: EntityPlayer): Unit = {
+    val motionVec = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
     entity.motionX = -entity.motionX
     entity.motionY = -entity.motionY
     entity.motionZ = -entity.motionZ
+    entity.rotationYaw = 180 - player.rotationYaw
+    entity.rotationPitch = -player.rotationPitch
   }
 }
 
