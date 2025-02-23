@@ -69,7 +69,6 @@ class WaveEffectRenderer(m: RenderManager) extends Render[WaveEffect](m) {
 
   override def doRender(effect: WaveEffect, x: Double, y: Double, z: Double, v3: Float, v4: Float) = {
       val maxAlpha = clampd(0, 1, alphaCurve.valueAt(effect.ticksExisted.toDouble / effect.life))
-
       glDisable(GL_CULL_FACE)
       glDisable(GL_DEPTH_TEST)
       glEnable(GL_BLEND)
@@ -98,8 +97,7 @@ class WaveEffectRenderer(m: RenderManager) extends Render[WaveEffect](m) {
           glPopMatrix()
         }
       })
-
-      glPopMatrix()
+    glPopMatrix()
       glEnable(GL_CULL_FACE)
       glEnable(GL_DEPTH_TEST)
   }

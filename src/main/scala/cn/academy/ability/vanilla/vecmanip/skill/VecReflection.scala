@@ -110,31 +110,27 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
       terminate()
   }
 
-  private def createNewFireball(source : EntityFireball): Boolean = {
+  private def createNewFireball(source: EntityFireball): Boolean = {
     source.setDead()
     val originalVelocity = new Vec3d(source.motionX, source.motionY, source.motionZ)
     val reversedVelocity = originalVelocity.scale(-1.0)
     val shootingEntity = source.shootingEntity
-    var fireball : EntityFireball = null
+
+    val fireball = source match {
+      case l: EntityLargeFireball =>
+        val fb = new EntityLargeFireball(world(), shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
+        fb.explosionPower = l.explosionPower
+        fb
+      case _ =>
+        if (shootingEntity != null)
+          new EntitySmallFireball(world(), shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
+        else
+          new EntitySmallFireball(world(), reversedVelocity.x, reversedVelocity.y, reversedVelocity.z, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
+    }
+
     fireball.motionX = reversedVelocity.x
     fireball.motionY = reversedVelocity.y
     fireball.motionZ = reversedVelocity.z
-
-    source match {
-      case l : EntityLargeFireball =>
-        fireball = new EntityLargeFireball(world(), shootingEntity, shootingEntity.posX,
-          shootingEntity.posY, shootingEntity.posZ)
-        fireball.asInstanceOf[EntityLargeFireball].explosionPower = l.explosionPower
-      case _ =>
-        source.shootingEntity match {
-          case null =>
-            fireball = new EntitySmallFireball(world(), source.posX, source.posY, source.posZ,
-              source.posX, source.posY, source.posZ)
-          case _ =>
-            fireball = new EntitySmallFireball(world(), shootingEntity, shootingEntity.posX,
-              shootingEntity.posY, shootingEntity.posZ)
-        }
-    }
 
     fireball.setPosition(source.posX, source.posY, source.posZ)
     EntityAffection.mark(fireball)
