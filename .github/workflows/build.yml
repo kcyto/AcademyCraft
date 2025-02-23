@@ -45,7 +45,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          name: AcademyCraft-CI
+          name: AcademyCraft Nightly
           tag_name: CI
           body: "*AcademyCraft CI Release*"
           files: |
