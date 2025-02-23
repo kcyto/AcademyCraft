@@ -95,29 +95,25 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     })
     entities.removeAll(visited)
 
-    entities.filterNot(EntityAffection.isMarked).foreach { entity =>
-      EntityAffection.getAffectInfo(entity) match {
-        case Affected(difficulty) =>
-          entity match {
-            case _ =>
-              if(consumeEntity(difficulty)) {
-                VecReflectionContext.reflect(entity, player, this)
-                ctx.addSkillExp(difficulty * 0.0008f)
-                sendToClient(MSG_REFLECT_ENTITY, entity)
-              }
-            case _ =>
-              if(consumeEntity(difficulty)) {
-                VecReflectionContext.reflect(entity, player, this)
-                EntityAffection.mark(entity)
-                ctx.addSkillExp(difficulty * 0.0008f)
-                sendToClient(MSG_REFLECT_ENTITY, entity)
-              }
-          }
-        case Excluded() =>
+    val processedEntities = mutable.Buffer[Entity]()
+
+    entities.foreach { entity =>
+      if (!EntityAffection.isMarked(entity)) {
+        EntityAffection.getAffectInfo(entity) match {
+          case Affected(difficulty) =>
+            if (consumeEntity(difficulty)) {
+              VecReflectionContext.reflect(entity, player, this)
+              EntityAffection.mark(entity)
+              ctx.addSkillExp(difficulty * 0.0008f)
+              sendToClient(MSG_REFLECT_ENTITY, entity)
+              processedEntities += entity
+            }
+          case Excluded() =>
+        }
       }
     }
 
-    visited ++= entities
+    visited ++= processedEntities
 
     if(!consumeNormal)
       terminate()
