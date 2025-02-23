@@ -47,12 +47,25 @@ private object VecReflectionContext {
   final val MSG_EFFECT = "effect"
   final val MSG_REFLECT_ENTITY = "reflect_ent"
 
-  def reflect(entity: Entity, player: EntityPlayer): Unit = {
-    entity.motionX = -entity.motionX
-    entity.motionY = -entity.motionY
-    entity.motionZ = -entity.motionZ
-    entity.rotationYaw = (entity.rotationYaw + 180) % 360
-    entity.rotationPitch = -entity.rotationPitch
+  def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
+    if (ctx.ctx.getSkillExp >= 0.7f) {
+      val lookVec = player.getLookVec
+      val speed = Math.hypot(Math.hypot(entity.motionX, entity.motionY), entity.motionZ)
+      val normalizedLook = lookVec.normalize()
+
+      entity.motionX = normalizedLook.x * speed
+      entity.motionY = normalizedLook.y * speed
+      entity.motionZ = normalizedLook.z * speed
+
+      entity.rotationYaw = Math.toDegrees(Math.atan2(normalizedLook.x, normalizedLook.z)).toFloat
+      entity.rotationPitch = Math.toDegrees(-Math.asin(normalizedLook.y)).toFloat
+    } else {
+      entity.motionX = -entity.motionX
+      entity.motionY = -entity.motionY
+      entity.motionZ = -entity.motionZ
+      entity.rotationYaw = (entity.rotationYaw + 180) % 360
+      entity.rotationPitch = -entity.rotationPitch
+    }
   }
 }
 
@@ -82,19 +95,19 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     })
     entities.removeAll(visited)
 
-    entities.filterNot(EntityAffection.isMarked).foreach (entity => {
+    entities.filterNot(EntityAffection.isMarked).foreach { entity =>
       EntityAffection.getAffectInfo(entity) match {
         case Affected(difficulty) =>
           entity match {
-            case fireball: EntityFireball =>
+            case _ =>
               if(consumeEntity(difficulty)) {
-                createNewFireball(fireball)
+                VecReflectionContext.reflect(entity, player, this)
                 ctx.addSkillExp(difficulty * 0.0008f)
                 sendToClient(MSG_REFLECT_ENTITY, entity)
               }
             case _ =>
               if(consumeEntity(difficulty)) {
-                reflect(entity, player)
+                VecReflectionContext.reflect(entity, player, this)
                 EntityAffection.mark(entity)
                 ctx.addSkillExp(difficulty * 0.0008f)
                 sendToClient(MSG_REFLECT_ENTITY, entity)
@@ -102,7 +115,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
           }
         case Excluded() =>
       }
-    })
+    }
 
     visited ++= entities
 
@@ -112,8 +125,12 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
 
   private def createNewFireball(source: EntityFireball): Boolean = {
     source.setDead()
-    val originalVelocity = new Vec3d(source.motionX, source.motionY, source.motionZ)
-    val reversedVelocity = originalVelocity.scale(-1.0)
+    val originalSpeed = Math.hypot(Math.hypot(source.motionX, source.motionY), source.motionZ)
+    val reversedVelocity = if(ctx.getSkillExp >= 0.7f) {
+      player.getLookVec.normalize().scale(originalSpeed)
+    } else {
+      new Vec3d(-source.motionX, -source.motionY, -source.motionZ)
+    }
     val shootingEntity = source.shootingEntity
 
     val fireball = source match {
@@ -250,7 +267,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
 
   @Listener(channel=MSG_REFLECT_ENTITY, side=Array(Side.CLIENT))
   private def c_reflectEntity(ent: Entity): Unit = {
-    reflect(ent, player)
+    VecReflectionContext.reflect(ent, player, par)
     reflectEffect(entityHeadPos(ent))
   }
 
