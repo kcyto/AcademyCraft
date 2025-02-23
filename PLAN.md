@@ -2,12 +2,12 @@
 
 由于只为满足个人使用，故本fork只会按照个人需求更新，也不会重构项目。
 
-若本项目无法满足你的需求，请仍继续使用 [AcademyCraft](https://github.com/MohistMC/AcademyCraft) 或 [AcademyCraft-Reborn](https://github.com/LovelyCane/AcademyCraft-Reborn)或提个Issue，对于高版本已有他人正在开发。
+若本项目无法满足你的需求，请仍继续使用 [AcademyCraft](https://github.com/MohistMC/AcademyCraft) 或 [AcademyCraft-Reborn](https://github.com/LovelyCane/AcademyCraft-Reborn) 又或者提个Issue，对于高版本已有他人正在开发。
 
 这边目前将不会在完全符合原著的情况下加入新内容并进行其他改进：
 - 通过「体晶」来诱发能力的暴走，但有较高负面风险且时间极其有限，在过渡使用则导致「崩坏」即死亡；
 - 当受到伤害，因疼痛而很难在短时间内持续使用能力。
-- 将「一方通行的一部分思维模式」植入受试者，使其获得飞跃性提升，失败则导个人现实致「」重置并死亡。
+- 将「一方通行的一部分思维模式」植入受试者，使其获得飞跃性提升，失败则导致「个人现实」重置并死亡。
 - 改进一些能力；
 - 大概不会因联动其他模组而改动或制作新内容；
 - 更多……
