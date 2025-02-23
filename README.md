@@ -20,8 +20,6 @@ And all versions of AcademyCraft are additionally licensed as following:
 
 Prohibits any person, company, business, organization, etc. from selling AcademyCraft and its contents in any form, including but not limited to paid downloads (including but not limited to various legal currencies, virtual currency, game token, etc.) AcademyCraft's items, the sale of AcademyCraft ability within the game, etc.
 
-AcademyCraft will collect your in-game mod usage data (level-up, use skill, etc.) and upload to a server for pure data analytic purpose. The data is guaranteed to be anonymous and will not contain any personal data (e.g. username). The feature is optional and you can turn it off via config.
-
 Lambda Innovation retains the copyright, the right of authorship, the ownership, etc. of AcademyCraft, regardless of all agreements, and any provision that requires these rights or a part of them is deemed invalid.  
 
 Lambda Innovation reserves the right of final interpretation and reserves the right to deny all agreements to revoke all authorizations.    
