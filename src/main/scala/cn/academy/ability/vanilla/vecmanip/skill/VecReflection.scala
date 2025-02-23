@@ -48,7 +48,7 @@ private object VecReflectionContext {
   final val MSG_REFLECT_ENTITY = "reflect_ent"
 
   def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
-    if (ctx.ctx.getSkillExp >= 0.7f) {
+    if (ctx.ctx.getSkillExp <= 0.25f) {
       val lookVec = player.getLookVec
       val speed = Math.hypot(Math.hypot(entity.motionX, entity.motionY), entity.motionZ)
       val normalizedLook = lookVec.normalize()
@@ -122,7 +122,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   private def createNewFireball(source: EntityFireball): Boolean = {
     source.setDead()
     val originalSpeed = Math.hypot(Math.hypot(source.motionX, source.motionY), source.motionZ)
-    val reversedVelocity = if(ctx.getSkillExp >= 0.7f) {
+    val reversedVelocity = if(ctx.getSkillExp <= 0.25f) {
       player.getLookVec.normalize().scale(originalSpeed)
     } else {
       new Vec3d(-source.motionX, -source.motionY, -source.motionZ)
@@ -169,7 +169,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
 
   /**
    * Note: Canceling the damage event in `LivingHurtEvent` still causes knockback, so there needs
-   *  to be one more pre testing.
+   *  to be one more pre-testing.
    */
   @SubscribeEvent
   def onLivingAttack(evt: LivingAttackEvent): Unit = {
