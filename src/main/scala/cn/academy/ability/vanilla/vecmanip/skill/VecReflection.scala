@@ -49,16 +49,24 @@ private object VecReflectionContext {
 
   def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
     if (ctx.ctx.getSkillExp <= 0.25f) {
-      val lookVec = player.getLookVec
-      val speed = Math.hypot(Math.hypot(entity.motionX, entity.motionY), entity.motionZ)
-      val normalizedLook = lookVec.normalize()
+      val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
+      val speed = velocity.lengthSquared()
+      val lookVec = player.getLookVec.normalize()
+      val dot = velocity.dotProduct(lookVec)
+      val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
+      val newVelocity =
+        if (reflectedVelocity.lengthSquared() > 0.001)
+          reflectedVelocity.normalize().scale(speed)
+        else
+          lookVec.scale(speed)
 
-      entity.motionX = normalizedLook.x * speed
-      entity.motionY = normalizedLook.y * speed
-      entity.motionZ = normalizedLook.z * speed
+      entity.motionX = newVelocity.x
+      entity.motionY = newVelocity.y
+      entity.motionZ = newVelocity.z
 
-      entity.rotationYaw = Math.toDegrees(Math.atan2(normalizedLook.x, normalizedLook.z)).toFloat
-      entity.rotationPitch = Math.toDegrees(-Math.asin(normalizedLook.y)).toFloat
+      val direction = newVelocity.normalize()
+      entity.rotationYaw = Math.toDegrees(Math.atan2(direction.x, direction.z)).toFloat
+      entity.rotationPitch = Math.toDegrees(-Math.asin(direction.y)).toFloat
     } else {
       entity.motionX = -entity.motionX
       entity.motionY = -entity.motionY
@@ -268,7 +276,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
   }
 
   @Listener(channel=MSG_EFFECT, side=Array(Side.CLIENT))
-  private def reflectEffect(point: Vec3d): Unit = {
+  def reflectEffect(point: Vec3d): Unit = {
     val eff = new WaveEffect(world, 2, 1.1)
     eff.setPosition(point.x, point.y, point.z)
     eff.rotationYaw = player.rotationYawHead
@@ -279,7 +287,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
     playSound(point)
   }
 
-  private def playSound(pos: net.minecraft.util.math.Vec3d): Unit = {
+    def playSound(pos: net.minecraft.util.math.Vec3d): Unit = {
     ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, 1.0f)
   }
 
