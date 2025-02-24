@@ -23,7 +23,7 @@ public class SkillMindCourse extends Skill {
     @SubscribeEvent
     public void recalcCPRecover(CalcEvent.CPRecoverSpeed evt) {
         if (AbilityData.get(evt.player).isSkillLearned(this)) {
-            evt.value *= 1.2f;
+            evt.value *= 1.25f;
         }
     }
 

@@ -172,7 +172,7 @@ ac.ability.generic.brain_course_advanced.name=Продвинутый курс м
 ac.ability.generic.mind_course.name=Курс разума (Внимания, может духа)
 ac.ability.generic.brain_course.desc=Uпройти тренировку для вашего мозга. Увеличивает Макс. CP на 1000.
 ac.ability.generic.brain_course_advanced.desc=Развивть мыслительные способности вашего мозга глубже. Увеличивает Макс. CP на 1000 и Макс. Перегрузку на 100.
-ac.ability.generic.mind_course.desc=Узнайте, как лучше расслабить свой мозг. Ускоряет восстановление CP на 20 %%.
+ac.ability.generic.mind_course.desc=Узнайте, как лучше расслабить свой мозг. Ускоряет восстановление CP на 25 %%.
 
 ## Electromaster
 ac.ability.electromaster.name=Электромастер

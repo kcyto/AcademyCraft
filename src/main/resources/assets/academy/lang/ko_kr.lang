@@ -174,7 +174,7 @@ ac.ability.generic.mind_course.name=마인드 코스
 
 ac.ability.generic.brain_course.desc=당신의 뇌를 위한 훈련을 받으세요. 최대 CP가 1000만큼 증가합니다.
 ac.ability.generic.brain_course_advanced.desc=여러분의 두뇌의 사고력을 깊이 발전시키세요. 최대 CP는 1000개, 최대 과부하는 100개 증가합니다.
-ac.ability.generic.mind_course.desc=여러분의 뇌를 더 잘 이완시키는 방법을 배우세요. CP 복구 속도를 20%% 향상시킵니다.
+ac.ability.generic.mind_course.desc=여러분의 뇌를 더 잘 이완시키는 방법을 배우세요. CP 복구 속도를 25%% 향상시킵니다.
 
 ## Electromaster
 ac.ability.electromaster.name=전자화기
