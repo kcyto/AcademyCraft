@@ -103,7 +103,12 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     })
     entities.removeAll(visited)
 
+    def consumeReflectCost(): Boolean = {
+      ctx.consume(0, lerpf(20, 15, ctx.getSkillExp))
+    }
     val processedEntities = mutable.Buffer[Entity]()
+    var consumedCP = false
+    val isMaxExp = ctx.getSkillExp == 1.0f
 
     entities.foreach { entity =>
       if (!EntityAffection.isMarked(entity)) {
@@ -115,6 +120,11 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
               ctx.addSkillExp(difficulty * 0.0008f)
               sendToClient(MSG_REFLECT_ENTITY, entity)
               processedEntities += entity
+
+              if (!consumeReflectCost()) {
+                terminate()
+              }
+              consumedCP = true
             }
           case Excluded() =>
         }
@@ -122,9 +132,15 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
 
     visited ++= processedEntities
-
-    if(!consumeNormal)
-      terminate()
+    if (!isMaxExp) {
+      if (!consumeNormal()) {
+        terminate()
+      }
+    } else {
+      if (processedEntities.nonEmpty && !consumedCP) {
+        terminate()
+      }
+    }
   }
 
   private def createNewFireball(source: EntityFireball): Boolean = {
@@ -241,7 +257,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   private def consumeDamage(damage: Float): Unit = ctx.consumeWithForce(0, lerpf(20, 15, ctx.getSkillExp) * damage)
 
   private def consumeNormal(): Boolean = {
-    ctx.consume(0,  lerpf(15, 11, ctx.getSkillExp))
+    ctx.consume(0, lerpf(15, 11, ctx.getSkillExp))
   }
 
   private val overloadToKeep = lerpf(350, 250, ctx.getSkillExp)
