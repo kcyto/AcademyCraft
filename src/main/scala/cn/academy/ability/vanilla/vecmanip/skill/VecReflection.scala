@@ -48,25 +48,19 @@ private object VecReflectionContext {
   final val MSG_REFLECT_ENTITY = "reflect_ent"
 
   def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
+    val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
+    val speed = velocity.lengthSquared()
+    val lookVec = player.getLookVec.normalize()
+
     if (ctx.ctx.getSkillExp <= 0.25f) {
-      val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
-      val speed = velocity.lengthSquared()
-      val lookVec = player.getLookVec.normalize()
       val dot = velocity.dotProduct(lookVec)
       val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
-      val newVelocity =
-        if (reflectedVelocity.lengthSquared() > 0.001)
-          reflectedVelocity.normalize().scale(speed)
-        else
-          lookVec.scale(speed)
+      val normalized = if (reflectedVelocity.lengthSquared() > 1e-6) reflectedVelocity.normalize() else lookVec
+      val newVelocity = normalized.scale(speed)
 
       entity.motionX = newVelocity.x
       entity.motionY = newVelocity.y
       entity.motionZ = newVelocity.z
-
-      val direction = newVelocity.normalize()
-      entity.rotationYaw = Math.toDegrees(Math.atan2(direction.x, direction.z)).toFloat
-      entity.rotationPitch = Math.toDegrees(-Math.asin(direction.y)).toFloat
     } else {
       entity.motionX = -entity.motionX
       entity.motionY = -entity.motionY
@@ -78,9 +72,10 @@ private object VecReflectionContext {
 }
 
 class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
+  import scala.collection.JavaConverters._
+  import VecReflectionContext._
 
   private val visited = mutable.Set[Entity]()
-  import scala.collection.JavaConversions._
 
   @Listener(channel=MSG_MADEALIVE, side=Array(Side.SERVER))
   def s_makeAlive(): Unit = {
@@ -98,11 +93,14 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   def s_tick(): Unit = {
     if(ctx.cpData.getOverload < overloadKeep) ctx.cpData.setOverload(overloadKeep)
     val range = 4
-    val entities = WorldUtils.getEntities(player, range, new Predicate[Entity] {
-      override def test(t: Entity): Boolean = true
-    })
-    entities.removeAll(visited)
-
+    val entities = WorldUtils.getEntities(player.world, player.posX, player.posY, player.posZ,
+        range.toDouble,
+        new Predicate[Entity] {
+          override def test(e: Entity): Boolean = true
+        }
+      ).asScala
+      .filterNot(e => visited.contains(e))
+      .filter(e => !EntityAffection.isMarked(e))
     def consumeReflectCost(): Boolean = {
       ctx.consume(0, lerpf(20, 15, ctx.getSkillExp))
     }
@@ -143,35 +141,35 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
   }
 
-  private def createNewFireball(source: EntityFireball): Boolean = {
-    source.setDead()
-    val originalSpeed = Math.hypot(Math.hypot(source.motionX, source.motionY), source.motionZ)
-    val reversedVelocity = if(ctx.getSkillExp <= 0.25f) {
-      player.getLookVec.normalize().scale(originalSpeed)
-    } else {
-      new Vec3d(-source.motionX, -source.motionY, -source.motionZ)
+  def createNewFireball(source: EntityFireball): Boolean = {
+    Option(source).foreach { src =>
+      val originalSpeed = new Vec3d(src.motionX, src.motionY, src.motionZ).lengthSquared()
+      val reversedVelocity = if(ctx.getSkillExp <= 0.25f) {
+        player.getLookVec.normalize().scale(originalSpeed)
+      } else {
+        new Vec3d(-src.motionX, -src.motionY, -src.motionZ).normalize().scale(originalSpeed)
+      }
+
+      val fireball = src match {
+        case l: EntityLargeFireball =>
+          val fb = new EntityLargeFireball(
+            world(), src.shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
+          fb.explosionPower = l.explosionPower
+          fb
+        case _ =>
+          new EntitySmallFireball(world(), src.shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z
+          )
+      }
+
+      fireball.setPosition(src.posX, src.posY, src.posZ)
+      fireball.motionX = reversedVelocity.x
+      fireball.motionY = reversedVelocity.y
+      fireball.motionZ = reversedVelocity.z
+
+      EntityAffection.mark(fireball)
+      world().spawnEntity(fireball)
+      src.setDead()
     }
-    val shootingEntity = source.shootingEntity
-
-    val fireball = source match {
-      case l: EntityLargeFireball =>
-        val fb = new EntityLargeFireball(world(), shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
-        fb.explosionPower = l.explosionPower
-        fb
-      case _ =>
-        if (shootingEntity != null)
-          new EntitySmallFireball(world(), shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
-        else
-          new EntitySmallFireball(world(), reversedVelocity.x, reversedVelocity.y, reversedVelocity.z, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
-    }
-
-    fireball.motionX = reversedVelocity.x
-    fireball.motionY = reversedVelocity.y
-    fireball.motionZ = reversedVelocity.z
-
-    fireball.setPosition(source.posX, source.posY, source.posZ)
-    EntityAffection.mark(fireball)
-    world().spawnEntity(fireball)
     true
   }
 
@@ -250,7 +248,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
   }
 
-  private def consumeEntity(difficulty: Float) = {
+  private def consumeEntity(difficulty: Float): Boolean = {
     ctx.consume(0, difficulty * lerpf(300, 160, ctx.getSkillExp))
   }
 
@@ -292,7 +290,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
   }
 
   @Listener(channel=MSG_EFFECT, side=Array(Side.CLIENT))
-  def reflectEffect(point: Vec3d): Unit = {
+  private def reflectEffect(point: Vec3d): Unit = {
     val eff = new WaveEffect(world, 2, 1.1)
     eff.setPosition(point.x, point.y, point.z)
     eff.rotationYaw = player.rotationYawHead
@@ -303,7 +301,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
     playSound(point)
   }
 
-    def playSound(pos: net.minecraft.util.math.Vec3d): Unit = {
+    private def playSound(pos: net.minecraft.util.math.Vec3d): Unit = {
     ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, 1.0f)
   }
 
