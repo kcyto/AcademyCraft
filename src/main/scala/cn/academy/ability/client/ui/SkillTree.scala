@@ -176,7 +176,7 @@ private object Common {
   private val texViewOutlineGlow = Resources.preloadMipmapTexture("guis/developer/skill_view_outline_glow")
   private val texButtonLearn = Resources.getTexture("guis/button/button_learn")
   private val texButtonReset = Resources.getTexture("guis/button/button_reset")
-  private val texButton      = Resources.getTexture("guis/developer/button")
+  private val texButton = Resources.getTexture("guis/developer/button")
 
   private val foSkillTitle = new FontOption(12, FontAlign.CENTER)
   private val foSkillDesc = new FontOption(9, FontAlign.CENTER)
@@ -283,8 +283,8 @@ private object Common {
           val blendOffset = idx * 0.08 + 0.1
 
           val mAlpha = (learned, if (skill.getParent == null) true else aData.isSkillLearned(skill.getParent)) match {
-            case (true, _)  => 1.0
-            case (_, true)  => 0.7
+            case (true, _) => 1.0
+            case (_, true) => 0.7
             case (_, false) => 0.25
           }
 
@@ -295,7 +295,7 @@ private object Common {
             val (pcx, pcy) = center(parent.guiX, parent.guiY)
             val (px, py) = (pcx - cx, pcy - cy)
             val norm = math.sqrt(px * px + py * py)
-            val (dx, dy) = (px/norm*12.2, py/norm*12.2)
+            val (dx, dy) = (px / norm * 12.2, py / norm * 12.2)
 
             drawLine(px + WidgetSize / 2 - dx, py + WidgetSize / 2 - dy,
               WidgetSize / 2 + dx, WidgetSize / 2 + dy, 5.5, mAlpha * (if (learned) 1.0 else 0.4))
@@ -336,9 +336,9 @@ private object Common {
 
             glTranslated(DrawAlign, DrawAlign, 10)
 
-            glTranslated(TotalSize/2, TotalSize/2, 0)
+            glTranslated(TotalSize / 2, TotalSize / 2, 0)
             glScaled(scale, scale, 1)
-            glTranslated(-TotalSize/2, -TotalSize/2, 0)
+            glTranslated(-TotalSize / 2, -TotalSize / 2, 0)
 
             // Draw back without depth writing
             glColor4d(1, 1, 1, backAlpha)
@@ -449,7 +449,7 @@ private object Common {
 
       {
         val cpData = CPData.get(player)
-        panel.child("text_exp").component[TextBox].setContent("EXP " + (aData.getLevelProgress * 100).toInt+"%")
+        panel.child("text_exp").component[TextBox].setContent(f"EXP ${aData.getLevelProgress * 100}%.0f%%")
 
       }
 
@@ -483,8 +483,10 @@ private object Common {
         progRate.progress = developer.getType.syncRate
         developer match {
           case tile: TileDeveloper =>
-            send(NetDelegate.MSG_GET_NODE, tile, Future.create(new Consumer[String]{
-              override def accept(result: String): Unit = {panel.child("button_wireless/text_nodename").component[TextBox].content = if (result != null) result else "N/A"}
+            send(NetDelegate.MSG_GET_NODE, tile, Future.create(new Consumer[String] {
+              override def accept(result: String): Unit = {
+                panel.child("button_wireless/text_nodename").component[TextBox].content = if (result != null) result else "N/A"
+              }
             }))
             panel.child("button_wireless").listens[LeftClickEvent](() => {
               val wirelessPage = WirelessPage.userPage(tile).window.centered()
@@ -511,10 +513,10 @@ private object Common {
   }
 
   private def drawLine(x0: Double, y0: Double, x1: Double, y1: Double,
-                       width: Double, alpha: Double): (Double)=>Any = {
+                       width: Double, alpha: Double): (Double) => Any = {
     val (dx, dy) = (x1 - x0, y1 - y0)
     val norm = math.sqrt(dx * dx + dy * dy)
-    val (nx, ny) = (-dy/norm/2*width, dx/norm/2*width)
+    val (nx, ny) = (-dy / norm / 2 * width, dx / norm / 2 * width)
 
     (progress) => {
       val (xx, yy) = (lerp(x0, x1, progress), lerp(y0, y1, progress))
@@ -567,13 +569,13 @@ private object Common {
       var canClose: Boolean = true
       var shouldRebuild = false
 
-      val icon = Resources.getTexture("abilities/condition/any" + (data.getLevel+1))
+      val icon = Resources.getTexture("abilities/condition/any" + (data.getLevel + 1))
 
       wid.listens[FrameEvent](() => {
         drawActionIcon(icon, progress, glow = progress == 1)
       })
 
-      val lvltext = local.getFormatted("uplevel", AbilityLocalization.instance.levelDesc(data.getLevel+1))
+      val lvltext = local.getFormatted("uplevel", AbilityLocalization.instance.levelDesc(data.getLevel + 1))
       val reqtext = local.get("req") + " %.0f".format(estmCons)
       textArea.listens[FrameEvent](() => {
         Font.draw(lvltext, 0, 3, foLevelTitle)
@@ -631,7 +633,7 @@ private object Common {
   }
 
   private def skillViewArea(skill: Skill)
-                           (implicit data: AbilityData, gui: CGui, developer: IDeveloper=null): Widget = {
+                           (implicit data: AbilityData, gui: CGui, developer: IDeveloper = null): Widget = {
     val ret = blackCover(gui)
 
     {
@@ -645,7 +647,7 @@ private object Common {
       val textArea = new Widget().size(0, 10).centered().pos(0, 25)
       if (learned) {
         skillWid.listens[FrameEvent](() => {
-          drawActionIcon(skill.getHintIcon, 0, glow=false)
+          drawActionIcon(skill.getHintIcon, 0, glow = false)
         })
         textArea.listens[FrameEvent](() => {
           FontBold.draw(skill.getDisplayName, 0, 3, foSkillTitle)
@@ -657,7 +659,7 @@ private object Common {
         var message: Option[String] = None
 
         skillWid.listens[FrameEvent](() => {
-          drawActionIcon(skill.getHintIcon, progress, glow=progress == 1)
+          drawActionIcon(skill.getHintIcon, progress, glow = progress == 1)
         })
 
         val skillNameText = skill.getDisplayName + s" (LV ${skill.getLevel})"
@@ -676,14 +678,14 @@ private object Common {
           val len = CondIconStep * conditions.size
 
           textArea.listens[FrameEvent](() => {
-            Font.draw(local.get("req"), -len/2 - 2, 28, foSkillReq)
+            Font.draw(local.get("req"), -len / 2 - 2, 28, foSkillReq)
           })
 
           case class CondTag(cond: IDevCondition, accepted: Boolean) extends Component("CondTag")
 
           conditions.zipWithIndex foreach { case (cond, idx) =>
             val widget = new Widget().size(CondIconSize, CondIconSize)
-              .pos(-len/2 + CondIconStep * idx, 25).size(CondIconSize, CondIconSize)
+              .pos(-len / 2 + CondIconStep * idx, 25).size(CondIconSize, CondIconSize)
 
             val tex = new DrawTexture(cond.getIcon)
             val accepted = cond.accepts(data, developer, skill)
@@ -704,7 +706,7 @@ private object Common {
                 val tag = Option(w.component[CondTag])
                 tag match {
                   case Some(CondTag(cond, accepted)) =>
-                    Font.draw(s"(${cond.getHintText})", len/2 + 3, 27, if (accepted) foSkillReqDetail else foSkillReqDetail2)
+                    Font.draw(s"(${cond.getHintText})", len / 2 + 3, 27, if (accepted) foSkillReqDetail else foSkillReqDetail2)
                   case _ =>
                 }
               case _ =>
@@ -781,7 +783,14 @@ private object Common {
     .addComponent(new DrawTexture(texButton))
     .addComponent(new Tint(Colors.monoBlend(1, .6f), Colors.monoBlend(1, 1), true))
 
-  private def drawActionIcon(icon: ResourceLocation, progress: Double, glow: Boolean) = {
+  private def drawActionIcon(icon: ResourceLocation, progress: Double, glow: Boolean): Unit = {
+    val previousProgram = glGetInteger(GL_CURRENT_PROGRAM)
+    try {
+    } finally {
+      glUseProgram(previousProgram)
+      glActiveTexture(GL_TEXTURE0)
+    }
+
     val BackSize = 50
     val IconSize = 27
     val IconAlign = (BackSize - IconSize) / 2
