@@ -49,7 +49,7 @@ private object VecReflectionContext {
 
   def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
     val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
-    val speed = velocity.lengthSquared()
+    val speed = velocity.length()
     val lookVec = player.getLookVec.normalize()
 
     if (ctx.ctx.getSkillExp <= 0.25f) {
@@ -62,13 +62,16 @@ private object VecReflectionContext {
       entity.motionY = newVelocity.y
       entity.motionZ = newVelocity.z
     } else {
-      entity.motionX = -entity.motionX
-      entity.motionY = -entity.motionY
-      entity.motionZ = -entity.motionZ
+      val speedMultiplier = lerpf(1.0f, 1.5f, ctx.ctx.getSkillExp)
+      entity.motionX = -entity.motionX * speedMultiplier
+      entity.motionY = -entity.motionY * speedMultiplier
+      entity.motionZ = -entity.motionZ * speedMultiplier
       entity.rotationYaw = (entity.rotationYaw + 180) % 360
       entity.rotationPitch = -entity.rotationPitch
     }
-  }
+
+    entity.velocityChanged = true
+    }
 }
 
 class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
