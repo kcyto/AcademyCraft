@@ -25,14 +25,12 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.{LivingAttackEvent, LivingHurtEvent}
 
 object VecReflection extends Skill("vec_reflection", 4) {
-
   MinecraftForge.EVENT_BUS.register(this)
 
   @SideOnly(Side.CLIENT)
   override def activate(rt: ClientRuntime, keyid: Int): Unit = {
     rt.addKey(keyid, KeyDelegates.contextActivate(this, new VecReflectionContext(_)))
   }
-
 }
 
 import VecReflectionContext._
@@ -55,9 +53,12 @@ private object VecReflectionContext {
       val lookVec = player.getLookVec.normalize()
       val dot = velocity.dotProduct(lookVec)
       val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
-      val normalized = if (reflectedVelocity.lengthSquared() > 1e-6) reflectedVelocity.normalize() else lookVec
-      val newVelocity = normalized.scale(speed)
 
+      val normalized =
+        if (reflectedVelocity.lengthSquared() > 1e-6) reflectedVelocity.normalize()
+        else lookVec
+
+      val newVelocity = normalized.scale(speed)
       entity.motionX = newVelocity.x
       entity.motionY = newVelocity.y
       entity.motionZ = newVelocity.z
@@ -66,18 +67,20 @@ private object VecReflectionContext {
       entity.motionY = -entity.motionY
       entity.motionZ = -entity.motionZ
 
-      val horizontalLength = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ)
-      val yaw = Math.toDegrees(Math.atan2(entity.motionZ, entity.motionX)).toFloat - 90.0f
-      val pitch = Math.toDegrees(-Math.asin(entity.motionY / speed)).toFloat
+      if (speed > 0) {
+        val horizontalLength = Math.hypot(entity.motionX, entity.motionZ)
+        val yaw = Math.toDegrees(Math.atan2(entity.motionZ, entity.motionX)).toFloat - 90.0f
+        val pitch = Math.toDegrees(-Math.asin(entity.motionY / speed)).toFloat
 
-      entity.rotationYaw = yaw
-      entity.prevRotationYaw = yaw
-      entity.rotationPitch = pitch
-      entity.prevRotationPitch = pitch
+        entity.rotationYaw = yaw
+        entity.prevRotationYaw = yaw
+        entity.rotationPitch = pitch
+        entity.prevRotationPitch = pitch
+      }
     }
 
     entity.velocityChanged = true
-    }
+  }
 }
 
 class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
@@ -85,6 +88,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   import VecReflectionContext._
 
   private val visited = mutable.Set[Entity]()
+  @volatile private var _isAttacking = false
 
   @Listener(channel=MSG_MADEALIVE, side=Array(Side.SERVER))
   def s_makeAlive(): Unit = {
@@ -96,20 +100,19 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   @Listener(channel=MSG_TERMINATED, side=Array(Side.SERVER, Side.CLIENT))
   def g_terminate(): Unit = {
     MinecraftForge.EVENT_BUS.unregister(this)
+    visited.clear()
   }
 
   @Listener(channel=MSG_TICK, side=Array(Side.SERVER))
   def s_tick(): Unit = {
     if(ctx.cpData.getOverload < overloadKeep) ctx.cpData.setOverload(overloadKeep)
     val range = 4
-    val entities = WorldUtils.getEntities(player.world, player.posX, player.posY, player.posZ,
-        range.toDouble,
-        new Predicate[Entity] {
-          override def test(e: Entity): Boolean = true
-        }
-      ).asScala
-      .filterNot(e => visited.contains(e))
-      .filter(e => !EntityAffection.isMarked(e))
+    val entities = WorldUtils.getEntities(player.world, player.posX, player.posY, player.posZ, range,
+      new Predicate[Entity] {
+        override def test(e: Entity): Boolean =
+          !visited.contains(e) && !EntityAffection.isMarked(e)
+      }
+    ).asScala
     def consumeReflectCost(): Boolean = {
       ctx.consume(0, lerpf(20, 15, ctx.getSkillExp))
     }
@@ -118,68 +121,49 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     val isMaxExp = ctx.getSkillExp == 1.0f
 
     entities.foreach { entity =>
-      if (!EntityAffection.isMarked(entity)) {
-        EntityAffection.getAffectInfo(entity) match {
-          case Affected(difficulty) =>
-            if (consumeEntity(difficulty)) {
-              VecReflectionContext.reflect(entity, player, this)
-              EntityAffection.mark(entity)
-              ctx.addSkillExp(difficulty * 0.0008f)
-              sendToClient(MSG_REFLECT_ENTITY, entity)
-              processedEntities += entity
+      EntityAffection.getAffectInfo(entity) match {
+        case Affected(difficulty) if consumeEntity(difficulty) =>
+          VecReflectionContext.reflect(entity, player, this)
+          EntityAffection.mark(entity)
+          ctx.addSkillExp(difficulty * 0.0008f)
+          sendToClient(MSG_REFLECT_ENTITY, entity)
+          processedEntities += entity
 
-              if (!consumeReflectCost()) {
-                terminate()
-              }
-              consumedCP = true
-            }
-          case Excluded() =>
-        }
+          if (!consumeReflectCost()) terminate()
+          consumedCP = true
+
+        case _ =>
       }
     }
 
     visited ++= processedEntities
-    if (!isMaxExp) {
-      if (!consumeNormal()) {
-        terminate()
-      }
-    } else {
-      if (processedEntities.nonEmpty && !consumedCP) {
-        terminate()
-      }
-    }
+
+    if (!isMaxExp && !consumeNormal()) terminate()
+    else if (processedEntities.nonEmpty && !consumedCP) terminate()
   }
 
-  def createNewFireball(source: EntityFireball): Boolean = {
+  private def createNewFireball(source: EntityFireball): Unit = {
     Option(source).foreach { src =>
       val reversedVelocity = new Vec3d(-src.motionX, -src.motionY, -src.motionZ)
       val speed = reversedVelocity.length()
-      val finalVelocity = if(ctx.getSkillExp >= 0.25f) {
-        player.getLookVec.normalize().scale(speed)
-      } else {
-        new Vec3d(-src.motionX, -src.motionY, -src.motionZ).normalize().scale(speed)
-      }
+
+      val finalVelocity =
+        if (ctx.getSkillExp >= 0.25f) player.getLookVec.normalize().scale(speed)
+        else reversedVelocity.normalize().scale(speed)
+
       val fireball = src match {
         case l: EntityLargeFireball =>
-          val fb = new EntityLargeFireball(
-            world(), src.shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z)
+          val fb = new EntityLargeFireball(world(), src.shootingEntity, finalVelocity.x, finalVelocity.y, finalVelocity.z)
           fb.explosionPower = l.explosionPower
           fb
         case _ =>
-          new EntitySmallFireball(world(), src.shootingEntity, reversedVelocity.x, reversedVelocity.y, reversedVelocity.z
-          )
+          new EntitySmallFireball(world(), src.shootingEntity, finalVelocity.x, finalVelocity.y, finalVelocity.z)
       }
 
       fireball.setPosition(src.posX, src.posY, src.posZ)
-      fireball.motionX = reversedVelocity.x
-      fireball.motionY = reversedVelocity.y
-      fireball.motionZ = reversedVelocity.z
-
-      EntityAffection.mark(fireball)
       world().spawnEntity(fireball)
       src.setDead()
     }
-    true
   }
 
   @Listener(channel=MSG_TICK, side=Array(Side.CLIENT))
@@ -224,36 +208,28 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     }
   }
 
-  // Sometimes reflection will cause reentrant, e.g. when Guardian
-  //   gives thorns damage to any of its attacks, or
-  //   two players vector-reflect against each other.
-  // Under these situation, we don't allow recursion of reflection.
-  private var _isAttacking = false
-
   /**
    * @param passby If passby=true, and this isn't a complete absorb, the action will not perform. Else it will.
    * @return (Whether action had been really performed, processed damage)
    */
   private def handleAttack(dmgSource: DamageSource, dmg: Float, passby: Boolean): (Boolean, Float) = {
     val reflectDamage = lerpf(0.6f, 1.2f, ctx.getSkillExp) * dmg
-    if (!passby) {
-      if (!_isAttacking) {
-        _isAttacking = true
-        consumeDamage(dmg)
-        ctx.addSkillExp(dmg * 0.0004f)
+    if (!passby && !_isAttacking) {
+      _isAttacking = true
+      consumeDamage(dmg)
+      ctx.addSkillExp(dmg * 0.0004f)
 
-        val sourceEntity = dmgSource.getImmediateSource
-        if (sourceEntity != null && sourceEntity != player) {
+      Option(dmgSource.getImmediateSource)
+        .filter(_ != player)
+        .foreach { sourceEntity =>
           ctx.attack(sourceEntity, reflectDamage)
-
-          if (!SideUtils.isClient)
-            sendToClient(MSG_EFFECT, sourceEntity.getPositionVector)
+          if (!SideUtils.isClient) sendToClient(MSG_EFFECT, sourceEntity.getPositionVector)
         }
-        _isAttacking = false
-      }
-      (true, dmg - reflectDamage)
+
+      _isAttacking = false
+      (true, math.max(0, dmg - reflectDamage))
     } else {
-      (reflectDamage>=1, dmg - reflectDamage)
+      (reflectDamage >= dmg, math.max(0, dmg - reflectDamage))
     }
   }
 
@@ -310,8 +286,9 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
     playSound(point)
   }
 
-    private def playSound(pos: net.minecraft.util.math.Vec3d): Unit = {
-    ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, 1.0f)
+  private def playSound(pos: Vec3d): Unit = {
+    ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, ranged(0.9f, 1.1f).toFloat
+    )
   }
 
   @SubscribeEvent
