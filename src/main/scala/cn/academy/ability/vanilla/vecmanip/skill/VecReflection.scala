@@ -287,7 +287,7 @@ class VecReflectionContextC(par: VecReflectionContext) extends ClientContext(par
   }
 
   private def playSound(pos: Vec3d): Unit = {
-    ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, ranged(0.9f, 1.1f).toFloat
+    ACSounds.playClient(world, pos.x, pos.y, pos.z, "vecmanip.vec_reflection", SoundCategory.AMBIENT, 0.5f, ranged(0.6f, 1.1f).toFloat
     )
   }
 
