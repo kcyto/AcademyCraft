@@ -10,8 +10,8 @@ import cn.lambdalib2.util.markdown.{GLMarkdownRenderer, MarkdownParser}
 import scala.collection.Map
 
 /**
-  * This class renderers markdown with keyid display support.
-  */
+ * This class renderers markdown with keyid display support.
+ */
 class ACMarkdownRenderer extends GLMarkdownRenderer {
 
   private val tutLocal = LocalHelper.at("ac.tutorial")

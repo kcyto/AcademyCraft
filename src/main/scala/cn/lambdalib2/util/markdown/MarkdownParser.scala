@@ -1,9 +1,9 @@
 /**
-* Copyright (c) Lambda Innovation, 2013-2016
-* This file is part of LambdaLib modding library.
-* https://github.com/LambdaInnovation/LambdaLib
-* Licensed under MIT, see project root for more information.
-*/
+ * Copyright (c) Lambda Innovation, 2013-2016
+ * This file is part of LambdaLib modding library.
+ * https://github.com/LambdaInnovation/LambdaLib
+ * Licensed under MIT, see project root for more information.
+ */
 package cn.lambdalib2.util.markdown
 
 import cn.lambdalib2.util.markdown.MarkdownParser.Attribute
@@ -11,23 +11,23 @@ import cn.lambdalib2.util.markdown.MarkdownParser.Attribute
 import scala.collection._
 
 /**
-  * Simple markdown dialect parser that uses recursion and regex heavily :-) Current supported syntax as follows:
-  *
-  *   * Header: 1~6 `#`s followed by text
-  *   * List element: `*` followed by a ` ` followed by text
-  *   * Emphasize: `**` followed by text followed by `**`
-  *   * Strong: `__` followed by text followed by `__`
-  *
-  * Above are rules that works on texts. Anything that are not text are treated as **tags**. Currently you can specify
-  * tag in two ways:
-  *
-  *   * Inline tag: `![tag_name attr1=val1 attr2=val2 ...]`
-  *     - You can wrap the value name with quotes to avoid parse interrupting.
-  *   * Image tag: `![hover](url)`
-  *     - Which is directly translated to `![image src=<url> hover=<hover>`.
-  *
-  * After parsing, the elements are passed to the `MarkdownRenderer` instructively.
-  */
+ * Simple markdown dialect parser that uses recursion and regex heavily :-) Current supported syntax as follows:
+ *
+ *   * Header: 1~6 `#`s followed by text
+ *   * List element: `*` followed by a ` ` followed by text
+ *   * Emphasize: `**` followed by text followed by `**`
+ *   * Strong: `__` followed by text followed by `__`
+ *
+ * Above are rules that works on texts. Anything that are not text are treated as **tags**. Currently you can specify
+ * tag in two ways:
+ *
+ *   * Inline tag: `![tag_name attr1=val1 attr2=val2 ...]`
+ *     - You can wrap the value name with quotes to avoid parse interrupting.
+ *   * Image tag: `![hover](url)`
+ *     - Which is directly translated to `![image src=<url> hover=<hover>`.
+ *
+ * After parsing, the elements are passed to the `MarkdownRenderer` instructively.
+ */
 object MarkdownParser {
   trait Attribute
   case class ListElement() extends Attribute
@@ -113,9 +113,9 @@ object MarkdownParser {
 }
 
 /**
-  * Abstract markdown renderer. Accepts a series of instruction in sequence and behaves afterwards according to
-  *  them.
-  */
+ * Abstract markdown renderer. Accepts a series of instruction in sequence and behaves afterwards according to
+ *  them.
+ */
 trait MarkdownRenderer {
 
   def onTextContent(text: String, attr: Set[Attribute])

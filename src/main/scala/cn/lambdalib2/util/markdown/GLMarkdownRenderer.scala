@@ -1,9 +1,9 @@
 /**
-* Copyright (c) Lambda Innovation, 2013-2016
-* This file is part of LambdaLib modding library.
-* https://github.com/LambdaInnovation/LambdaLib
-* Licensed under MIT, see project root for more information.
-*/
+ * Copyright (c) Lambda Innovation, 2013-2016
+ * This file is part of LambdaLib modding library.
+ * https://github.com/LambdaInnovation/LambdaLib
+ * Licensed under MIT, see project root for more information.
+ */
 package cn.lambdalib2.util.markdown
 
 import java.util
@@ -20,8 +20,8 @@ import scala.collection.JavaConversions._
 import scala.collection._
 
 /**
-  * Renders markdown to legacy opengl.
-  */
+ * Renders markdown to legacy opengl.
+ */
 class GLMarkdownRenderer extends MarkdownRenderer {
 
   // Render parameters

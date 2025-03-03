@@ -50,9 +50,9 @@ private object VecReflectionContext {
   def reflect(entity: Entity, player: EntityPlayer, ctx: VecReflectionContext): Unit = {
     val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
     val speed = velocity.length()
-    val lookVec = player.getLookVec.normalize()
 
     if (ctx.ctx.getSkillExp <= 0.25f) {
+      val lookVec = player.getLookVec.normalize()
       val dot = velocity.dotProduct(lookVec)
       val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
       val normalized = if (reflectedVelocity.lengthSquared() > 1e-6) reflectedVelocity.normalize() else lookVec
@@ -62,12 +62,18 @@ private object VecReflectionContext {
       entity.motionY = newVelocity.y
       entity.motionZ = newVelocity.z
     } else {
-      val speedMultiplier = lerpf(1.0f, 1.5f, ctx.ctx.getSkillExp)
-      entity.motionX = -entity.motionX * speedMultiplier
-      entity.motionY = -entity.motionY * speedMultiplier
-      entity.motionZ = -entity.motionZ * speedMultiplier
-      entity.rotationYaw = (entity.rotationYaw + 180) % 360
-      entity.rotationPitch = -entity.rotationPitch
+      entity.motionX = -entity.motionX
+      entity.motionY = -entity.motionY
+      entity.motionZ = -entity.motionZ
+
+      val horizontalLength = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ)
+      val yaw = Math.toDegrees(Math.atan2(entity.motionZ, entity.motionX)).toFloat - 90.0f
+      val pitch = Math.toDegrees(-Math.asin(entity.motionY / speed)).toFloat
+
+      entity.rotationYaw = yaw
+      entity.prevRotationYaw = yaw
+      entity.rotationPitch = pitch
+      entity.prevRotationPitch = pitch
     }
 
     entity.velocityChanged = true
@@ -146,13 +152,13 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
 
   def createNewFireball(source: EntityFireball): Boolean = {
     Option(source).foreach { src =>
-      val originalSpeed = new Vec3d(src.motionX, src.motionY, src.motionZ).lengthSquared()
-      val reversedVelocity = if(ctx.getSkillExp <= 0.25f) {
-        player.getLookVec.normalize().scale(originalSpeed)
+      val reversedVelocity = new Vec3d(-src.motionX, -src.motionY, -src.motionZ)
+      val speed = reversedVelocity.length()
+      val finalVelocity = if(ctx.getSkillExp >= 0.25f) {
+        player.getLookVec.normalize().scale(speed)
       } else {
-        new Vec3d(-src.motionX, -src.motionY, -src.motionZ).normalize().scale(originalSpeed)
+        new Vec3d(-src.motionX, -src.motionY, -src.motionZ).normalize().scale(speed)
       }
-
       val fireball = src match {
         case l: EntityLargeFireball =>
           val fb = new EntityLargeFireball(
