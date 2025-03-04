@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.{Render, RenderManager}
 import net.minecraft.entity.Entity
 import net.minecraft.init.Blocks
 import net.minecraft.util.{EnumFacing, ResourceLocation}
-import net.minecraft.util.math.{BlockPos, Vec3d}
+import net.minecraft.util.math.{AxisAlignedBB, BlockPos, Vec3d}
 import net.minecraft.world.World
 import net.minecraftforge.fml.client.registry.{IRenderFactory, RenderingRegistry}
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -45,8 +45,13 @@ class BloodSprayRenderer(manager: RenderManager) extends Render[BloodSprayEffect
 
     material.setTexture(texture)
     RenderUtils.loadTexture(texture)
+
     glPushMatrix()
+    glPushAttrib(GL_ENABLE_BIT)
+
     glDisable(GL_CULL_FACE)
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     glTranslated(x, y, z)
     glRotatef(-eff.rotationYaw, 0, 1, 0)
@@ -57,7 +62,7 @@ class BloodSprayRenderer(manager: RenderManager) extends Render[BloodSprayEffect
 
     mesh.draw(material)
 
-    glEnable(GL_CULL_FACE)
+    glPopAttrib()
     glPopMatrix()
   }
 
@@ -65,14 +70,19 @@ class BloodSprayRenderer(manager: RenderManager) extends Render[BloodSprayEffect
 }
 
 class BloodSprayEffect(world: World, pos: BlockPos, side: Int) extends LocalEntity(world) {
-  require(side >= 0 && side < EnumFacing.values().length, s"Invalid side value: $side")
+  require(side >= 0 && side < EnumFacing.VALUES.length,
+    s"Invalid side value: $side (valid range: 0-${EnumFacing.VALUES.length - 1})")
 
-  private val dir = EnumFacing.values()(side)
-  val textureID: Int = RandUtils.rangei(0, 10)
+  private val dir = EnumFacing.VALUES(side)
+  val textureID: Int = RandUtils.rangei(0, 2)
 
-  val size: Double = RandUtils.ranged(1.1, 1.4) * (if (dir.getAxis.isVertical) 1.0 else 0.8)
+  val planeOffset: (Double, Double) = {
+    val clamp = (v: Double) => v.max(-0.2).min(0.2)
+    (clamp(rand.nextGaussian() * 0.15), clamp(rand.nextGaussian() * 0.15))
+  }
+
+  val size: Double = RandUtils.ranged(1.1, 1.4) * (if (isWall) 0.8 else 1.0)
   val rotation: Double = RandUtils.ranged(0, 360)
-  val planeOffset: (Double, Double) = (rand.nextGaussian() * 0.15, rand.nextGaussian() * 0.15)
 
   {
     ignoreFrustumCheck = true
@@ -82,34 +92,38 @@ class BloodSprayEffect(world: World, pos: BlockPos, side: Int) extends LocalEnti
 
   private def updatePosition(): Unit = {
     val blockState = world.getBlockState(pos)
-    val bounds = blockState.getBoundingBox(world, pos)
+    val bounds =
+      if (blockState.getBlock == Blocks.AIR)
+        new AxisAlignedBB(0,0,0,1,1,1)
+      else
+        blockState.getBoundingBox(world, pos)
 
-    val dx = bounds.maxX - bounds.minX
-    val dy = bounds.maxY - bounds.minY
-    val dz = bounds.maxZ - bounds.minZ
-
-    val cx = (bounds.minX + bounds.maxX) * 0.5
-    val cy = (bounds.minY + bounds.maxY) * 0.5
-    val cz = (bounds.minZ + bounds.maxZ) * 0.5
+    val (dx, dy, dz) = (bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ)
+    val (cx, cy, cz) = (bounds.minX + dx/2, bounds.minY + dy/2, bounds.minZ + dz/2)
 
     val offsetFactor = 0.51
+    val (xOffset, yOffset, zOffset) = (
+      dir.getXOffset * offsetFactor * dx,
+      dir.getYOffset * offsetFactor * dy,
+      dir.getZOffset * offsetFactor * dz
+    )
 
     setPosition(
-      pos.getX + cx + (dir.getXOffset * offsetFactor * dx).toDouble,
-      pos.getY + cy + (dir.getYOffset * offsetFactor * dy).toDouble,
-      pos.getZ + cz + (dir.getZOffset * offsetFactor * dz).toDouble
+      pos.getX + cx + xOffset,
+      pos.getY + cy + yOffset,
+      pos.getZ + cz + zOffset
     )
   }
 
   new EntityLook(dir).applyToEntity(this)
 
   override def onUpdate(): Unit = {
-    if (ticksExisted > 1200 || world.getBlockState(pos).getBlock == Blocks.AIR) {
+    if (ticksExisted > 1200 || !world.isBlockLoaded(pos) || world.getBlockState(pos).getBlock == Blocks.AIR) {
       setDead()
     }
   }
 
   override def shouldRenderInPass(pass: Int): Boolean = pass == 1
 
-  def isWall: Boolean = dir.getAxis.isVertical
+  def isWall: Boolean = dir.getAxis.isHorizontal
 }
