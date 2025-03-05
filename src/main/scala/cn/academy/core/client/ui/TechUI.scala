@@ -674,13 +674,13 @@ object WirelessPage {
 
         val avail = result.avail.toList.map(a => (a.tile(world), a.encrypted))
           .flatMap {
-          case (Some(node), enc) =>
-            Some[AvailTarget](new AvailTarget {
-              override def connect(pass: String): Unit = send(MSG_USER_CONNECT, user, node, pass, newFuture())
-              override def name: String = node.getNodeName
-              override def encrypted = enc
-            })
-          case _ => None
+            case (Some(node), enc) =>
+              Some[AvailTarget](new AvailTarget {
+                override def connect(pass: String): Unit = send(MSG_USER_CONNECT, user, node, pass, newFuture())
+                override def name: String = node.getNodeName
+                override def encrypted = enc
+              })
+            case (None, _) => None
           }
 
         rebuildPage(ret.window, linked, avail)

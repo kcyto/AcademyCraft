@@ -49,7 +49,7 @@ private object VecReflectionContext {
     val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
     val speed = velocity.length()
 
-    if (ctx.ctx.getSkillExp <= 0.25f) {
+    if (ctx.ctx.getSkillExp <= 0.15f) {
       val lookVec = player.getLookVec.normalize()
       val dot = velocity.dotProduct(lookVec)
       val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
@@ -90,6 +90,13 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
   private val visited = mutable.Set[Entity]()
   @volatile private var _isAttacking = false
 
+  private def isPlayerOwned(entity: Entity): Boolean = entity match {
+    case throwable: EntityThrowable => throwable.getThrower == player
+    case fireball: EntityFireball => Option(fireball.shootingEntity).contains(player)
+    case arrow: EntityArrow => Option(arrow.shootingEntity).contains(player)
+    case _ => false
+  }
+
   @Listener(channel=MSG_MADEALIVE, side=Array(Side.SERVER))
   def s_makeAlive(): Unit = {
     MinecraftForge.EVENT_BUS.register(this)
@@ -121,18 +128,20 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
     val isMaxExp = ctx.getSkillExp == 1.0f
 
     entities.foreach { entity =>
-      EntityAffection.getAffectInfo(entity) match {
-        case Affected(difficulty) if consumeEntity(difficulty) =>
-          VecReflectionContext.reflect(entity, player, this)
-          EntityAffection.mark(entity)
-          ctx.addSkillExp(difficulty * 0.0008f)
-          sendToClient(MSG_REFLECT_ENTITY, entity)
-          processedEntities += entity
+      if (!isPlayerOwned(entity)) {
+        EntityAffection.getAffectInfo(entity) match {
+          case Affected(difficulty) if consumeEntity(difficulty) =>
+            VecReflectionContext.reflect(entity, player, this)
+            EntityAffection.mark(entity)
+            ctx.addSkillExp(difficulty * 0.0008f)
+            sendToClient(MSG_REFLECT_ENTITY, entity)
+            processedEntities += entity
 
-          if (!consumeReflectCost()) terminate()
-          consumedCP = true
+            if (!consumeReflectCost()) terminate()
+            consumedCP = true
 
-        case _ =>
+          case _ =>
+        }
       }
     }
 
@@ -148,7 +157,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
       val speed = reversedVelocity.length()
 
       val finalVelocity =
-        if (ctx.getSkillExp >= 0.25f) player.getLookVec.normalize().scale(speed)
+        if (ctx.getSkillExp >= 0.05f) player.getLookVec.normalize().scale(speed)
         else reversedVelocity.normalize().scale(speed)
 
       val fireball = src match {
