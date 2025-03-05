@@ -1,8 +1,8 @@
 # Plan
 
-故本fork虽为按照个人需求更新，也不会重构项目，但仍能够提供该模组还存在的问题。
+本fork虽按照个人需求更新，也不会重构项目，但仍能够提供该模组还存在的问题。
 
-若本项目无法满足你的需求，请仍继续使用 [AcademyCraft](https://github.com/MohistMC/AcademyCraft) 或 [AcademyCraft-Reborn](https://github.com/LovelyCane/AcademyCraft-Reborn) 又或者提个Issue，对于高版本已有他人正在开发。
+若本fork无法满足你的需求，请仍使用 [AcademyCraft](https://github.com/MohistMC/AcademyCraft) 或 [AcademyCraft-Reborn](https://github.com/LovelyCane/AcademyCraft-Reborn) 又或者提个Issue，对于高版本已有他人正在开发。
 
 这边目前将不会在完全符合原著的情况下加入新内容并进行其他改进：
 - 通过「体晶」来诱发能力的暴走，但有较高负面风险且时间极其有限，在过渡使用则导致「崩坏」；
