@@ -12,118 +12,123 @@ import net.minecraft.client.renderer.entity.{Render, RenderManager}
 import net.minecraft.entity.Entity
 import net.minecraft.init.Blocks
 import net.minecraft.util.{EnumFacing, ResourceLocation}
-import net.minecraft.util.math.{AxisAlignedBB, BlockPos, Vec3d}
+import net.minecraft.util.math.{BlockPos, Vec3d}
 import net.minecraft.world.World
 import net.minecraftforge.fml.client.registry.{IRenderFactory, RenderingRegistry}
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import org.lwjgl.opengl.GL11._
+
+object BloodSprayEffect {
+  val MAX_LIFETIME = 1200
+  val TEXTURE_VARIANTS = 3
+  val PLANE_OFFSET_MULTIPLIER = 0.15
+}
 
 @RegEntityRender(classOf[BloodSprayEffect])
 class BloodSprayRenderer(manager: RenderManager) extends Render[BloodSprayEffect](manager) {
-  private val TEXTURE_GROUND_PATHS = generateTexturePaths("grnd", 3)
-  private val TEXTURE_WALL_PATHS = generateTexturePaths("wall", 3)
+  import org.lwjgl.opengl.GL11._
 
-  private val mesh: LegacyMesh = {
-    val m = new LegacyMesh()
+  private val texGrnd = loadTextures("grnd")
+  private val texWall = loadTextures("wall")
+
+  private val mesh = {
+    val m = new LegacyMesh
     LegacyMeshUtils.createBillboard(m, -0.5, -0.5, 0.5, 0.5)
     m
   }
-
   private val material = new SimpleMaterial(null)
 
-  private def generateTexturePaths(prefix: String, count: Int): Vector[ResourceLocation] =
-    (0 until count).map(i => Resources.getTexture(s"effects/blood_spray/$prefix/$i")).toVector
+  private def loadTextures(name: String): Vector[ResourceLocation] =
+    (0 until BloodSprayEffect.TEXTURE_VARIANTS)
+      .map(x => Resources.getTexture(s"effects/blood_spray/$name/$x"))
+      .toVector
 
-  override def doRender(
-                         eff: BloodSprayEffect,
-                         x: Double, y: Double, z: Double,
-                         partialTicks: Float,
-                         destroyProgress: Float
-                       ): Unit = {
-    val textures = if (eff.isWall) TEXTURE_WALL_PATHS else TEXTURE_GROUND_PATHS
-    val texture = textures(eff.textureID % textures.size)
+  override def doRender(eff: BloodSprayEffect, x: Double, y: Double, z: Double, partialTicks: Float, f2: Float): Unit = {
+    val textureList = if (eff.isWall) texWall else texGrnd
+    val texture = textureList(eff.textureID % textureList.size)
 
     material.setTexture(texture)
     RenderUtils.loadTexture(texture)
 
-    glPushMatrix()
-    glPushAttrib(GL_ENABLE_BIT)
+    try {
+      glDisable(GL_CULL_FACE)
+      glPushMatrix()
 
-    glDisable(GL_CULL_FACE)
-    glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+      glTranslated(x, y, z)
+      glRotatef(-eff.rotationYaw, 0, 1, 0)
+      glRotatef(-eff.rotationPitch, 1, 0, 0)
+      glTranslated(eff.planeOffsetX, eff.planeOffsetY, 0)
+      glScaled(eff.size, eff.size, eff.size)
+      glRotated(eff.rotation, 0, 0, 1)
 
-    glTranslated(x, y, z)
-    glRotatef(-eff.rotationYaw, 0, 1, 0)
-    glRotatef(-eff.rotationPitch, 1, 0, 0)
-    glTranslated(eff.planeOffset._1, eff.planeOffset._2, 0)
-    glScaled(eff.size, eff.size, eff.size)
-    glRotated(eff.rotation, 0, 0, 1)
-
-    mesh.draw(material)
-
-    glPopAttrib()
-    glPopMatrix()
+      mesh.draw(material)
+    } finally {
+      glPopMatrix()
+      glEnable(GL_CULL_FACE)
+    }
   }
 
   override def getEntityTexture(entity: BloodSprayEffect): ResourceLocation = null
 }
 
 class BloodSprayEffect(world: World, pos: BlockPos, side: Int) extends LocalEntity(world) {
-  require(side >= 0 && side < EnumFacing.VALUES.length,
-    s"Invalid side value: $side (valid range: 0-${EnumFacing.VALUES.length - 1})")
+  import BloodSprayEffect._
 
-  private val dir = EnumFacing.VALUES(side)
-  val textureID: Int = RandUtils.rangei(0, 2)
+  private val validSide = if (side < 0 || side >= EnumFacing.values().length) {
+    EnumFacing.UP
+  } else EnumFacing.values()(side)
 
-  val planeOffset: (Double, Double) = {
-    val clamp = (v: Double) => v.max(-0.2).min(0.2)
-    (clamp(rand.nextGaussian() * 0.15), clamp(rand.nextGaussian() * 0.15))
-  }
+  val dir: EnumFacing = validSide
+  val textureID: Int = RandUtils.rangei(0, TEXTURE_VARIANTS - 1)
 
-  val size: Double = RandUtils.ranged(1.1, 1.4) * (if (isWall) 0.8 else 1.0)
+  val size: Double = RandUtils.ranged(1.1, 1.4) * (if (dir.getAxis.isVertical) 1.0 else 0.8)
   val rotation: Double = RandUtils.ranged(0, 360)
+  val (planeOffsetX, planeOffsetY) = (
+    rand.nextGaussian() * PLANE_OFFSET_MULTIPLIER,
+    rand.nextGaussian() * PLANE_OFFSET_MULTIPLIER
+  )
 
   {
     ignoreFrustumCheck = true
     setSize(1.5f, 2.2f)
-    updatePosition()
+    validatePosition()
   }
 
-  private def updatePosition(): Unit = {
+  private def validatePosition(): Unit = {
+    if (!world.isBlockLoaded(pos)) {
+      setDead()
+      return
+    }
+
     val blockState = world.getBlockState(pos)
-    val bounds =
-      if (blockState.getBlock == Blocks.AIR)
-        new AxisAlignedBB(0,0,0,1,1,1)
-      else
-        blockState.getBoundingBox(world, pos)
+    if (blockState.getBlock == Blocks.AIR) {
+      setDead()
+      return
+    }
 
+    val bounds = blockState.getBoundingBox(world, pos)
     val (dx, dy, dz) = (bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ)
-    val (cx, cy, cz) = (bounds.minX + dx/2, bounds.minY + dy/2, bounds.minZ + dz/2)
-
-    val offsetFactor = 0.51
-    val (xOffset, yOffset, zOffset) = (
-      dir.getXOffset * offsetFactor * dx,
-      dir.getYOffset * offsetFactor * dy,
-      dir.getZOffset * offsetFactor * dz
+    val (xm, ym, zm) = (
+      (bounds.minX + bounds.maxX) / 2,
+      (bounds.minY + bounds.maxY) / 2,
+      (bounds.minZ + bounds.maxZ) / 2
     )
 
     setPosition(
-      pos.getX + cx + xOffset,
-      pos.getY + cy + yOffset,
-      pos.getZ + cz + zOffset
+      pos.getX + xm + dir.getXOffset * 0.51 * dx,
+      pos.getY + ym + dir.getYOffset * 0.51 * dy,
+      pos.getZ + zm + dir.getZOffset * 0.51 * dz
     )
   }
 
   new EntityLook(dir).applyToEntity(this)
 
   override def onUpdate(): Unit = {
-    if (ticksExisted > 1200 || !world.isBlockLoaded(pos) || world.getBlockState(pos).getBlock == Blocks.AIR) {
+    if (ticksExisted > MAX_LIFETIME || !world.isBlockLoaded(pos) || world.getBlockState(pos).getBlock == Blocks.AIR) {
       setDead()
     }
   }
 
   override def shouldRenderInPass(pass: Int): Boolean = pass == 1
 
-  def isWall: Boolean = dir.getAxis.isHorizontal
+  def isWall: Boolean = dir.getAxis.isVertical
 }
