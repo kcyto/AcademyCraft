@@ -49,7 +49,7 @@ private object VecReflectionContext {
     val velocity = new Vec3d(entity.motionX, entity.motionY, entity.motionZ)
     val speed = velocity.length()
 
-    if (ctx.ctx.getSkillExp <= 0.15f) {
+    if (ctx.ctx.getSkillExp <= 0.25f) {
       val lookVec = player.getLookVec.normalize()
       val dot = velocity.dotProduct(lookVec)
       val reflectedVelocity = velocity.subtract(lookVec.scale(2 * dot))
@@ -157,7 +157,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
       val speed = reversedVelocity.length()
 
       val finalVelocity =
-        if (ctx.getSkillExp >= 0.05f) player.getLookVec.normalize().scale(speed)
+        if (ctx.getSkillExp >= 0.25f) player.getLookVec.normalize().scale(speed)
         else reversedVelocity.normalize().scale(speed)
 
       val fireball = src match {
@@ -222,7 +222,7 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
    * @return (Whether action had been really performed, processed damage)
    */
   private def handleAttack(dmgSource: DamageSource, dmg: Float, passby: Boolean): (Boolean, Float) = {
-    val reflectDamage = lerpf(0.6f, 1.2f, ctx.getSkillExp) * dmg
+    val reflectDamage = lerpf(0.8f, 1.5f, ctx.getSkillExp) * dmg
     if (!passby && !_isAttacking) {
       _isAttacking = true
       consumeDamage(dmg)
@@ -236,9 +236,9 @@ class VecReflectionContext(p: EntityPlayer) extends Context(p, VecReflection) {
         }
 
       _isAttacking = false
-      (true, math.max(0, dmg - reflectDamage))
+      (true, 0)
     } else {
-      (reflectDamage >= dmg, math.max(0, dmg - reflectDamage))
+      (reflectDamage > 0, 0)
     }
   }
 
