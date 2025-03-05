@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 
 /**
  * Academy Craft Mod Main Class
- * 
+ *
  * @author acaly, WeathFolD, KS
  *
  */
@@ -47,7 +47,7 @@ public class AcademyCraft {
     @Instance("academy-craft")
     public static AcademyCraft INSTANCE;
 
-    public static final String VERSION = "1.1.6";
+    public static final String VERSION = "1.1.6-beta2";
 
     public static final boolean DEBUG_MODE = VERSION.startsWith("@");
 
@@ -74,10 +74,9 @@ public class AcademyCraft {
     @StateEventCallback(priority = 1)
     private static void preInit(FMLPreInitializationEvent event) {
         log.info("Starting AcademyCraft");
-        log.info("Copyright (c) Lambda Innovation, 2013-2018");
-        log.info("https://ac.li-dev.cn/");
-        log.info("Copyright (c) MohistMC, 2023-2023");
-        log.info("https://www.mohistmc.com");
+        log.info("Copyright © 2013-2018 Lambda Innovation - https://ac.li-dev.cn");
+        log.info("Copyright © 2023 MohistMC - https://www.mohistmc.com");
+        log.info("Copyright © 2025 kcyto - https://github.com/kcyto");
         recipes = new RecipeRegistry();
 
         config = new Configuration(event.getSuggestedConfigurationFile());
@@ -126,7 +125,7 @@ public class AcademyCraft {
         recipes = null; // Release and have fun GC
         config.save();
     }
-    
+
     @SideOnly(Side.CLIENT)
     @EventHandler
     public void postInit2(FMLPostInitializationEvent event) {
@@ -144,7 +143,7 @@ public class AcademyCraft {
 
     @SubscribeEvent
     public void onClientDisconnectionFromServer(
-        ClientDisconnectionFromServerEvent e)
+            ClientDisconnectionFromServerEvent e)
     {
         config.save();
     }
