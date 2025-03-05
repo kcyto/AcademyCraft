@@ -1,6 +1,6 @@
 # Plan
 
-由于只为满足个人使用，故本fork只会按照个人需求更新，也不会重构项目。
+故本fork虽为按照个人需求更新，也不会重构项目，但仍能够提供该模组还存在的问题。
 
 若本项目无法满足你的需求，请仍继续使用 [AcademyCraft](https://github.com/MohistMC/AcademyCraft) 或 [AcademyCraft-Reborn](https://github.com/LovelyCane/AcademyCraft-Reborn) 又或者提个Issue，对于高版本已有他人正在开发。
 
