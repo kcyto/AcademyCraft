@@ -12,6 +12,7 @@ import cn.lambdalib2.render.obj.ObjParser;
 import cn.lambdalib2.util.ResourceUtils;
 import com.google.common.base.Throwables;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -137,6 +138,12 @@ public class ClientResources {
         return ret;
     }
 
+    @SideOnly(Side.CLIENT)
+    public static void refreshFonts() {
+        fontsInit = false;
+        checkFontInit();
+    }
+
     public static ResourceLocation preloadTexture(String loc) {
         ResourceLocation ret = Resources.getTexture(loc);
 
@@ -175,9 +182,14 @@ public class ClientResources {
                     new ResourceLocation("academy", "fonts/misans-normal.ttf")))
             {
                 Font baseFont = Font.createFont(Font.TRUETYPE_FONT, is);
-                font = new TrueTypeFont(baseFont.deriveFont(Font.PLAIN, 24));
-                fontBold = new TrueTypeFont(baseFont.deriveFont(Font.BOLD, 24));
-                fontItalic = new TrueTypeFont(baseFont.deriveFont(Font.ITALIC, 24));
+
+                ScaledResolution res = new ScaledResolution(MC);
+                float scaleFactor = res.getScaleFactor() / 2.0f;
+                int dynamicSize = (int) (24 * scaleFactor);
+
+                font = new TrueTypeFont(baseFont.deriveFont(Font.PLAIN, dynamicSize));
+                fontBold = new TrueTypeFont(baseFont.deriveFont(Font.BOLD, dynamicSize));
+                fontItalic = new TrueTypeFont(baseFont.deriveFont(Font.ITALIC, dynamicSize));
             } catch (Exception e) {
                 throw new RuntimeException("Critical error: Internal font cannot be loaded.", e);
             }
