@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 import net.minecraft.client.renderer.entity.{Render, RenderManager}
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.DamageSource
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.{ResourceLocation, SoundCategory}
 import net.minecraft.world.Explosion
@@ -143,12 +144,15 @@ class PlasmaCannonContext(p: EntityPlayer) extends Context(p, PlasmaCannon) with
 
   private def explode() = {
     WorldUtils.getEntities(world,
-      destination.x, destination.y, destination.z,
-      10, EntitySelectors.everything)
-          .foreach(entity => {
-            ctx.attack(entity, lerpf(80, 150, ctx.getSkillExp))
-            entity.hurtResistantTime = -1
-          })
+        destination.x, destination.y, destination.z,
+        10, EntitySelectors.everything)
+      .foreach(entity => {
+        entity.attackEntityFrom(
+          DamageSource.causeExplosionDamage(player),
+          lerpf(80, 150, ctx.getSkillExp)
+        )
+        entity.hurtResistantTime = -1
+      })
 
     val explosion = new Explosion(world, player,
       destination.x, destination.y, destination.z,
